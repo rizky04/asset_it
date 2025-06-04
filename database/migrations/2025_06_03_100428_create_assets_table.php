@@ -18,23 +18,24 @@ return new class extends Migration
             $table->string('brand');
             $table->string('model');
             $table->string('serial_number');
-            $table->string('Processor')->nullable();
-            $table->string('Storage')->nullable();
-            $table->string('RAM')->nullable();
+            $table->string('processor')->nullable();
+            $table->string('storage')->nullable();
+            $table->string('ram')->nullable();
             $table->string('ukuran_layar')->nullable();
-            $table->string('operating_system')->nullable();
+            $table->string('os')->nullable();
             $table->string('office')->nullable();
             $table->text('software')->nullable();
             $table->text('accessories')->nullable();
             $table->string('warranty')->nullable();
+            $table->date('received_date')->nullable();
             $table->date('purchase_date')->nullable();
             $table->date('warranty_expiration')->nullable();
             $table->decimal('purchase_price', 10, 2)->nullable();
             $table->decimal('current_value', 10, 2)->nullable();
             $table->string('supplier')->nullable();
             $table->enum('status', ['available', 'assigned', 'maintenance', 'damaged', 'disposed'])->default('available');
-            $table->string('location');
-            $table->text('notes');
+            $table->string('location')->nullable();
+            $table->text('notes')->nullable();
             $table->string('image')->nullable();
             $table->foreignId('category_id')
                   ->references('id')

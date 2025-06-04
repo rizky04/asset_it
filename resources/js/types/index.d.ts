@@ -47,3 +47,37 @@ export interface Category {
     slug: string;
     description?: string;
 }
+
+export interface Asset {
+    id: number;
+    assets_code : string;
+    name: string;
+    brand: string;
+    model: string;
+    serial_number: string;
+    processor: string;
+    storage: string;
+    ram: string;
+    ukuran_layar: string;
+    os: string;
+    office: string;
+    software: string;
+    accessories: string;
+    warranty: string;
+    received_date: string;
+    purchase_date: string;
+    warranty_expiration: string;
+    purchase_price: number;
+    current_value: number;
+    supplier: string;
+    status: string;
+    location: string;
+    notes: string;
+    image: string | null;
+    category_id: number;
+    category: Category;
+    user_id: number;
+    user: User;
+    created_at: string;
+    updated_at: string;
+}
