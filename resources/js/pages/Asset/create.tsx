@@ -27,8 +27,8 @@ interface CreateCategoryProps {
 export default function create({ category }: CreateCategoryProps) {
   const breadcrumbs: BreadcrumbItem[] = [
     {
-      title: 'Product / Create',
-      href: '/product',
+      title: 'asset / Create',
+      href: '/asset',
     },
   ];
   const { data, setData, post, processing, errors } = useForm({
@@ -60,6 +60,14 @@ export default function create({ category }: CreateCategoryProps) {
   })
   const [assetCode, setAssetCode] = useState<string>('');
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+
+  const status = [
+    { values: 'available', label: 'Available' },
+    { values: 'assigned', label: 'Assigned' },
+    { values: 'maintenance', label: 'Maintenance' },
+    { values: 'damaged', label: 'Damaged' },
+    { values: 'disposed', label: 'Disposed' },
+  ];
 
   const handleCategoryChange = async (categoryId: string) => {
     const numbericCategoryId = parseInt(categoryId);
@@ -104,11 +112,11 @@ export default function create({ category }: CreateCategoryProps) {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Create Category" />
-        <div className="flex justify-center items-center my-4">
+      <div className="flex justify-center items-center my-4">
         <Card className='max-w-5xl w-full'>
           <CardHeader>
             <p className='font-serif font-extrabold'>
-              <small>*Pilih Kategori product untuk membuat kode product</small>
+              <small>*Pilih Kategori asset untuk membuat kode asset</small>
               <br />
               <small>*Upload file gamber produck jika diperlukan</small>
             </p>
@@ -121,7 +129,7 @@ export default function create({ category }: CreateCategoryProps) {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="grid gap-2">
                       <label>
-                        Kategori Produk
+                        Categori Asset
                       </label>
                       <Select
                         name='category_id'
@@ -144,17 +152,17 @@ export default function create({ category }: CreateCategoryProps) {
                     </div>
                     <div className="grid gap-2">
                       <label>
-                        Kode Produk
+                        Code Asset
                       </label>
                       <Input value={assetCode}
-                       name='assets_code'
-                        className={cn(errors.assets_code ? "border-red-600 border-1": "", "input-base-class")}
-                       />
+                        name='assets_code'
+                        className={cn(errors.assets_code ? "border-red-600 border-1" : "", "input-base-class")}
+                      />
                       <InputError message={errors.assets_code} />
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      Nama Product
+                        Name Asset
                       </label>
                       <Input
                         value={data.name}
@@ -163,67 +171,272 @@ export default function create({ category }: CreateCategoryProps) {
                         type='text'
                         className={cn(errors.name ? "border-red-600 border-1" : "", "input-base-class")}
                         disabled={processing}
-                        placeholder=" Nama Product" />
+                        placeholder=" Nama asset" />
                       <InputError message={errors.name} />
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      Harga Product
+                        Brand
                       </label>
                       <Input
-                        value={data.price}
-                        onChange={(e) => setData('price', e.target.value)}
-                        name="price"
-                        type='number'
-                        className={cn(errors.price ? "border-red-600 border-1" : "", "input-base-class")}
+                        value={data.brand}
+                        onChange={(e) => setData('brand', e.target.value)}
+                        name="brand"
+                        type='text'
+                        className={cn(errors.brand ? "border-red-600 border-1" : "", "input-base-class")}
                         disabled={processing}
-                        placeholder="Harga" />
-                      <InputError message={errors.price} />
-                    </div>
-                     <div className="grid gap-2">
-                      <label>
-                      Harga Jual
-                      </label>
-                      <Input
-                        value={data.selling_price}
-                        onChange={(e) => setData('selling_price', e.target.value)}
-                        name="price"
-                        type='number'
-                        className={cn(errors.selling_price ? "border-red-600 border-1" : "", "input-base-class")}
-                        disabled={processing}
-                        placeholder="Harga" />
-                      <InputError message={errors.selling_price} />
-                    </div>
-                     <div className="grid gap-2">
-                      <label>
-                      Stok Produk
-                      </label>
-                      <Input
-                        value={data.stock}
-                        onChange={(e) => setData('stock', e.target.value)}
-                        name="price"
-                        type='number'
-                        className={cn(errors.stock ? "border-red-600 border-1" : "", "input-base-class")}
-                        disabled={processing}
-                        placeholder="Harga" />
-                      <InputError message={errors.stock} />
+                        placeholder="brand" />
+                      <InputError message={errors.brand} />
                     </div>
                     <div className="grid gap-2">
                       <label>
-                        Deskripsi
+                        Model
+                      </label>
+                      <Input
+                        value={data.model}
+                        onChange={(e) => setData('model', e.target.value)}
+                        name="model"
+                        type='text'
+                        className={cn(errors.model ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="model" />
+                      <InputError message={errors.model} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                        Serial Number
+                      </label>
+                      <Input
+                        value={data.serial_number}
+                        onChange={(e) => setData('serial_number', e.target.value)}
+                        name="serial_number"
+                        type='text'
+                        className={cn(errors.serial_number ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder=" Serial Number" />
+                      <InputError message={errors.serial_number} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                        Processor
+                      </label>
+                      <Input
+                        value={data.processor}
+                        onChange={(e) => setData('processor', e.target.value)}
+                        name="processor"
+                        type='text'
+                        className={cn(errors.processor ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Processor" />
+                      <InputError message={errors.processor} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                        Storage
+                      </label>
+                      <Input
+                        value={data.storage}
+                        onChange={(e) => setData('storage', e.target.value)}
+                        name="storage"
+                        type='text'
+                        className={cn(errors.storage ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Storage" />
+                      <InputError message={errors.storage} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                      Ram
+                      </label>
+                      <Input
+                        value={data.ram}
+                        onChange={(e) => setData('ram', e.target.value)}
+                        name="ram"
+                        type='text'
+                        className={cn(errors.ram ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Ram" />
+                      <InputError message={errors.ram} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                      Ukuran layar
+                      </label>
+                      <Input
+                        value={data.ukuran_layar}
+                        onChange={(e) => setData('ukuran_layar', e.target.value)}
+                        name="ukuran_layar"
+                        type='text'
+                        className={cn(errors.ukuran_layar ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Ukuran layar" />
+                      <InputError message={errors.ukuran_layar} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                      OS
+                      </label>
+                      <Input
+                        value={data.os}
+                        onChange={(e) => setData('os', e.target.value)}
+                        name="os"
+                        type='text'
+                        className={cn(errors.os ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="OS" />
+                      <InputError message={errors.os} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                      Office
+                      </label>
+                      <Input
+                        value={data.office}
+                        onChange={(e) => setData('office', e.target.value)}
+                        name="office"
+                        type='text'
+                        className={cn(errors.office ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Office" />
+                      <InputError message={errors.office} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                      Warranty
+                      </label>
+                      <Input
+                        value={data.warranty}
+                        onChange={(e) => setData('warranty', e.target.value)}
+                        name="warranty"
+                        type='text'
+                        className={cn(errors.warranty ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Warranty" />
+                      <InputError message={errors.warranty} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                      Received Date
+                      </label>
+                      <Input
+                        value={data.received_date}
+                        onChange={(e) => setData('received_date', e.target.value)}
+                        name="received_date"
+                        type='date'
+                        className={cn(errors.received_date ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Received Date" />
+                      <InputError message={errors.received_date} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                      Purchase Date
+                      </label>
+                      <Input
+                        value={data.purchase_date}
+                        onChange={(e) => setData('purchase_date', e.target.value)}
+                        name="purchase_date"
+                        type='date'
+                        className={cn(errors.purchase_date ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Purchase Date" />
+                      <InputError message={errors.purchase_date} />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <label>
+                      Warranty Expiration
+                      </label>
+                      <Input
+                        value={data.warranty_expiration}
+                        onChange={(e) => setData('warranty_expiration', e.target.value)}
+                        name="warranty_expiration"
+                        type='date'
+                        className={cn(errors.warranty_expiration ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder=" Warranty Expiration" />
+                      <InputError message={errors.warranty_expiration} />
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <label>
+                        Purchase Price
+                      </label>
+                      <Input
+                        value={data.purchase_price}
+                        onChange={(e) => setData('purchase_price', e.target.value)}
+                        name="purchase_price"
+                        type='number'
+                        className={cn(errors.purchase_price ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Purchase Price" />
+                      <InputError message={errors.purchase_price} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                        Curent Value
+                      </label>
+                      <Input
+                        value={data.current_value}
+                        onChange={(e) => setData('current_value', e.target.value)}
+                        name="current_value"
+                        type='number'
+                        className={cn(errors.current_value ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Current Value" />
+                      <InputError message={errors.current_value} />
+                    </div>
+                     <div className="grid gap-2">
+                      <label>
+                      Supplier
+                      </label>
+                      <Input
+                        value={data.supplier}
+                        onChange={(e) => setData('supplier', e.target.value)}
+                        name="supplier"
+                        type='text'
+                        className={cn(errors.supplier ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Supplier" />
+                      <InputError message={errors.supplier} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                        Status Asset
+                      </label>
+                      <Select
+                        name='status'
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Status Asset" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {status.map((item) => (
+                            <SelectItem
+                              value={item.values}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <InputError message={errors.category_id} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                        Notes
                       </label>
                       <Textarea
-                        value={data.description}
-                        onChange={(e) => setData('description', e.target.value)}
-                        name="description"
+                        value={data.notes}
+                        onChange={(e) => setData('notes', e.target.value)}
+                        name="notes"
                         disabled={processing}
-                        className={cn(errors.description ? "border-red-600 border-1" : "", "input-base-class")}
-                        placeholder="description" />
-                      <InputError message={errors.description} />
+                        className={cn(errors.notes ? "border-red-600 border-1" : "", "input-base-class")}
+                        placeholder="Notes" />
+                      <InputError message={errors.notes} />
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      Foto
+                        Photo
                       </label>
                       <Input
                         name="image"
@@ -231,7 +444,7 @@ export default function create({ category }: CreateCategoryProps) {
                         disabled={processing}
                         onChange={handleImageChange}
                         className={cn(errors.image ? "border-red-600 border-1" : "", "input-base-class")}
-                         />
+                      />
                       <InputError message={errors.image} />
                     </div>
                     <div className="grid gap-2">
@@ -243,19 +456,19 @@ export default function create({ category }: CreateCategoryProps) {
                         />
                       )}
                     </div>
-                    
+
                     <div className='gap-y-2'>
-                      <Button   type="submit">
-                        Simpan
+                      <Button type="submit">
+                        Save
                       </Button>
                     </div>
                   </div>
                 </form>
               </div>
-           </div>
+            </div>
           </CardContent>
         </Card>
-        </div>
+      </div>
     </AppLayout>
   )
 }
