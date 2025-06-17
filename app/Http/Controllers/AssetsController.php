@@ -39,6 +39,7 @@ class AssetsController extends Controller
     {
         $data = $request->validated();
         $data['user_id'] = Auth::user()->id;
+        $data['status'] = 'available';
 
         if($request->hasFile('image')){
             $image = $request->file('image');
@@ -53,13 +54,10 @@ class AssetsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Assets $assets)
+    public function show(Assets $asset)
     {
         return Inertia::render('Asset/show', [
-            'assets' => Assets::with(['category', 'user'])
-                ->findOrFail($assets->id),
-            'categories' => Category::all(),
-            'user' => Auth::user(),
+            'asset' => Assets::with(['category', 'user'])->findOrFail($asset->id),
         ]);
     }
 
@@ -69,9 +67,8 @@ class AssetsController extends Controller
     public function edit($id)
     {
        return Inertia::render('Asset/edit', [
-            'assets' => Assets::with(['category', 'user'])
-                ->findOrFail($id),
-            'categories' => Category::all(),
+            'asset' => Assets::with(['category', 'user'])->findOrFail($id),
+            'category' => Category::all(),
             'user' => Auth::user(),
         ]);
     }
@@ -79,13 +76,13 @@ class AssetsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAssetsRequest $request, Assets $assets)
+    public function update(UpdateAssetsRequest $request, Assets $asset)
     {
         $data = $request->validated();
         
         if($request->hasFile('image')){
-            if($assets->image){
-                Storage::delete('assets/' . basename($assets->image)); // Delete old image if exists
+            if($asset->image){
+                Storage::delete('assets/' . basename($asset->image)); // Delete old image if exists
             }
             $image = $request->file('image');
             $imagePath = $image->storeAs('assets', $image->hashName());
@@ -93,18 +90,18 @@ class AssetsController extends Controller
         }else{
             unset($data['image']); // Remove image key if no new image is uploaded
         }
-        $assets->update($data);
+        $asset->update($data);
         return to_route('asset.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Assets $assets)
+    public function destroy(Assets $asset)
     {
-        $assets->delete();
-        if($assets->image){
-            Storage::delete('assets/' . basename($assets->image)); // Delete image file if exists
+        $asset->delete();
+        if($asset->image){
+            Storage::delete('assets/' . basename($asset->image)); // Delete image file if exists
         }
         return to_route('asset.index');
     }
@@ -117,7 +114,7 @@ class AssetsController extends Controller
             ->first();
         $lastNumber = 0;
 
-        if($lastAssets && preg_match('/\d+$/', $lastAssets->product_code, $matches)) {
+        if($lastAssets && preg_match('/\d+$/', $lastAssets->assets_code, $matches)) {
             $lastNumber = (int)$matches[0];
         }
 

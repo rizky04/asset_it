@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
         <div className="grid grid-cols-2 gap-2">
           <div>
             <Button>
-              <Link href={route("asset.create")}>New Asset</Link>
+              <Link href={route("assignments.create")}>New Assignments</Link>
             </Button>
           </div>
           <div>

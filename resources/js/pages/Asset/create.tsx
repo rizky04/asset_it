@@ -81,6 +81,7 @@ export default function create({ category }: CreateCategoryProps) {
         const prefix = selectcategoryData.name.slice(0, 3);
         const today = new Date().toLocaleDateString('id-ID').replace(/\//g, '');
         const newCode = `${prefix}-${today}-${String(result.last_number + 1).padStart(2, '0')}`;
+        console.log('New Asset Code:', result); // Debugging line
         setAssetCode(newCode);
         setData('assets_code', newCode);
       }
@@ -246,7 +247,7 @@ export default function create({ category }: CreateCategoryProps) {
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      Ram
+                        Ram
                       </label>
                       <Input
                         value={data.ram}
@@ -260,7 +261,7 @@ export default function create({ category }: CreateCategoryProps) {
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      Ukuran layar
+                        Ukuran layar
                       </label>
                       <Input
                         value={data.ukuran_layar}
@@ -274,7 +275,7 @@ export default function create({ category }: CreateCategoryProps) {
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      OS
+                        OS
                       </label>
                       <Input
                         value={data.os}
@@ -288,7 +289,7 @@ export default function create({ category }: CreateCategoryProps) {
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      Office
+                        Office
                       </label>
                       <Input
                         value={data.office}
@@ -302,7 +303,7 @@ export default function create({ category }: CreateCategoryProps) {
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      Warranty
+                        Warranty
                       </label>
                       <Input
                         value={data.warranty}
@@ -316,7 +317,7 @@ export default function create({ category }: CreateCategoryProps) {
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      Received Date
+                        Received Date
                       </label>
                       <Input
                         value={data.received_date}
@@ -330,7 +331,7 @@ export default function create({ category }: CreateCategoryProps) {
                     </div>
                     <div className="grid gap-2">
                       <label>
-                      Purchase Date
+                        Purchase Date
                       </label>
                       <Input
                         value={data.purchase_date}
@@ -345,7 +346,7 @@ export default function create({ category }: CreateCategoryProps) {
 
                     <div className="grid gap-2">
                       <label>
-                      Warranty Expiration
+                        Warranty Expiration
                       </label>
                       <Input
                         value={data.warranty_expiration}
@@ -357,7 +358,7 @@ export default function create({ category }: CreateCategoryProps) {
                         placeholder=" Warranty Expiration" />
                       <InputError message={errors.warranty_expiration} />
                     </div>
-                    
+
                     <div className="grid gap-2">
                       <label>
                         Purchase Price
@@ -386,9 +387,9 @@ export default function create({ category }: CreateCategoryProps) {
                         placeholder="Current Value" />
                       <InputError message={errors.current_value} />
                     </div>
-                     <div className="grid gap-2">
+                    <div className="grid gap-2">
                       <label>
-                      Supplier
+                        Supplier
                       </label>
                       <Input
                         value={data.supplier}
@@ -423,6 +424,20 @@ export default function create({ category }: CreateCategoryProps) {
                     </div>
                     <div className="grid gap-2">
                       <label>
+                        Location
+                      </label>
+                      <Input
+                        value={data.location}
+                        onChange={(e) => setData('location', e.target.value)}
+                        name="location"
+                        type='text'
+                        className={cn(errors.location ? "border-red-600 border-1" : "", "input-base-class")}
+                        disabled={processing}
+                        placeholder="Location" />
+                      <InputError message={errors.location} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
                         Notes
                       </label>
                       <Textarea
@@ -433,6 +448,32 @@ export default function create({ category }: CreateCategoryProps) {
                         className={cn(errors.notes ? "border-red-600 border-1" : "", "input-base-class")}
                         placeholder="Notes" />
                       <InputError message={errors.notes} />
+                    </div>
+                    <div className="grid gap-2">
+                      <label>
+                        Software
+                      </label>
+                      <Textarea
+                        value={data.software}
+                        onChange={(e) => setData('software', e.target.value)}
+                        name="software"
+                        disabled={processing}
+                        className={cn(errors.software ? "border-red-600 border-1" : "", "input-base-class")}
+                        placeholder="Software" />
+                      <InputError message={errors.software} />
+                    </div> 
+                    <div className="grid gap-2">
+                      <label>
+                        Software
+                      </label>
+                      <Textarea
+                        value={data.accessories}
+                        onChange={(e) => setData('accessories', e.target.value)}
+                        name="accessories"
+                        disabled={processing}
+                        className={cn(errors.accessories ? "border-red-600 border-1" : "", "input-base-class")}
+                        placeholder="Accessories" />
+                      <InputError message={errors.accessories} />
                     </div>
                     <div className="grid gap-2">
                       <label>
@@ -456,12 +497,12 @@ export default function create({ category }: CreateCategoryProps) {
                         />
                       )}
                     </div>
-
-                    <div className='gap-y-2'>
-                      <Button type="submit">
-                        Save
-                      </Button>
-                    </div>
+                    
+                  </div>
+                  <div className='gap-y-2'>
+                    <Button type="submit">
+                      Save
+                    </Button>
                   </div>
                 </form>
               </div>

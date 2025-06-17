@@ -73,10 +73,26 @@ export interface Asset {
     status: string;
     location: string;
     notes: string;
-    image: string | null;
+    image?: string;
     category_id: number;
     category: Category;
     user_id: number;
+    user: User;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Assignments {
+    id: number;
+    asset_id: number;
+    user_id: number;
+    assignment_date : string;
+    return_date: string;
+    condition_note: string;
+    received_by: number;
+    status: string;
+    document_url?: string;
+    asset: Asset;
     user: User;
     created_at: string;
     updated_at: string;

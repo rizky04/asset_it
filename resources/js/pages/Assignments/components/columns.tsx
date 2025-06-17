@@ -1,6 +1,5 @@
 "use client"
 
-import { Asset } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
  
@@ -29,68 +28,65 @@ import {
 import { useState } from "react"
 import { router } from "@inertiajs/react"
 import { toast } from "sonner"
-import { parse } from "path"
+import { Assignments } from "@/types"
 
-export const columns: ColumnDef<Asset>[] = [
+export const columns: ColumnDef<Assignments>[] = [
   {
     header: "No",
     cell: ({ row }) => row.index + 1,
   },
   {
-    accessorKey: "assets_code",
-    header: "assets_code",
+    accessorKey: "user_id",
+    header: "user_id",
+  }, 
+  {
+    accessorKey: "Asset ",
+    header: "Asset",
+    cell:({row}) => row.original.asset.name
   },
   {
-    accessorKey: "name",
-    header: "name",
+    accessorKey: "Asset Code",
+    header: "Asset Code",
+    cell:({row}) => row.original.asset.assets_code
   },
   {
-    accessorKey: "brand",
-    header: "brand",
+    accessorKey: "assignment_date",
+    header: "assignment_date",
   },
   {
-    accessorKey: "purchase_price",
-    header: "purchase_price",
-    cell:({row}) => {
-      const price = parseFloat(row.getValue('purchase_price'))
-      const formatted = new Intl.NumberFormat("id-ID", 
-        { style: "currency", currency: "IDR"}).format(price);
-      return formatted
-    }
+    accessorKey: "return_date",
+    header: "return_date",
   },
   {
-    accessorKey: "current_value",
-    header: "current_value",
-    cell:({row}) => {
-      const current_value = parseFloat(row.getValue('current_value'))
-      const formatted = new Intl.NumberFormat("id-ID",{
-         style: "currency", 
-         currency: "IDR"
-        }).format(current_value);
-      return formatted
-    }
+    accessorKey: "condition_note",
+    header: "condition_note",
   },
   {
-    accessorKey: "category",
-    header: "Category",
-    cell:({row}) => row.original.category.name
+    accessorKey: "received_by",
+    header: "received_by",
   },
-  
-  
+  {
+    accessorKey: "status",
+    header: "status",
+  },
+  {
+    accessorKey: "document_url",
+    header: "document_url",
+  },
   {
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => {
-        const asset = row.original
+        const assignments = row.original
         const [isDialogOpen, setIsDialogOpen] = useState(false)
-        console.log(asset.id)
+        console.log(assignments.id)
         const onDelete = () => {
-            router.delete(route('asset.destroy', asset.id), {
+            router.delete(route('assignments.destroy', assignments.id), {
                 onSuccess: () => {
-                    toast.success('Asset deleted successfully')
+                    toast.success('assignments deleted successfully')
                 },
                 onError: () => {
-                    toast.error('Failed to delete Asset')
+                    toast.error('Failed to delete assignments')
                 },
             })
             setIsDialogOpen(false)
@@ -107,12 +103,12 @@ export const columns: ColumnDef<Asset>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => {router.visit(route('asset.edit', asset.id))}}
+                onClick={() => {router.visit(route('assignments.edit', assignments.id))}}
               >
                Edit
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => {router.visit(route('asset.show', asset.id))}}
+                onClick={() => {router.visit(route('assignments.show', assignments.id))}}
               >
                Detail
               </DropdownMenuItem>
@@ -126,7 +122,7 @@ export const columns: ColumnDef<Asset>[] = [
           {/* <AlertDialogTrigger>Open</AlertDialogTrigger> */}
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure delete product {asset.name} ?</AlertDialogTitle>
+              <AlertDialogTitle>Are you absolutely sure delete data {assignments.asset.assets_code} ?</AlertDialogTitle>
               <AlertDialogDescription>
                 This action cannot be undone. This will permanently delete your account
                 and remove your data from our servers.

@@ -25,7 +25,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Assign To',
-        url: '/assign-to',
+        url: '/assignments',
         icon: TextSelect,
     },
 ];
