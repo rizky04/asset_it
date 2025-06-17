@@ -40,7 +40,17 @@ class AssignmentsController extends Controller
      */
     public function store(StoreAssignmentsRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['user_id'] = auth()->user->id(); // Assuming you want to store the authenticated user ID
+        
+        if($request->hasFile('document_url')){
+            $image = $request->file('document_url');
+            $imagePath = $image->storeAs('assets', $image->hashName());
+            $data['document_url'] = $imagePath;
+        }
+
+        Assignments::create($data);
+        return to_route('assignments.index');
     }
 
     /**

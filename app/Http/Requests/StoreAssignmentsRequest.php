@@ -23,7 +23,6 @@ class StoreAssignmentsRequest extends FormRequest
     {
         return [
             'asset_id' => 'required|exists:assets,id',
-            'user_id' => 'required|exists:users,id',
             'assignment_date' => 'required|date',
             'returned_date' => 'nullable|date|after_or_equal:assigned_at',
             'condition_note' => 'nullable|string|max:255',

@@ -60,12 +60,12 @@ export default function create({ assets, users }: CreateAssetsProps) {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    post(route('asset.store'), {
+    post(route('assignments.store'), {
       onSuccess: () => {
-        toast.success('asset created successfully');
+        toast.success('assignments created successfully');
       },
       onError: () => {
-        toast.error('Failed to create asset');
+        toast.error('Failed to create assignments');
       },
     })
   }
@@ -167,6 +167,7 @@ export default function create({ assets, users }: CreateAssetsProps) {
                       </label>
                       <Select
                         name='status'
+                        onValueChange={(value) => setData('status', value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Status Asset" />
