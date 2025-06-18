@@ -15,6 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('category', CategoryController::class);
     Route::resource('asset', AssetsController::class);
     Route::resource('assignments', AssignmentsController::class);
+    Route::get('returned/{id}', [AssignmentsController::class, 'returned'])->name('assignments.returned');
     Route::get('/assets/last-number/{categoryId}', [AssetsController::class, 'getlastAssetsNumber'])->name('assets.last-number');
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');

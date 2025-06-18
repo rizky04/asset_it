@@ -22,4 +22,14 @@ class Assignments extends Model
     {
         return $this->belongsTo(Assets::class);
     }
+
+    /**
+     * Get the user that owns the Assignments
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

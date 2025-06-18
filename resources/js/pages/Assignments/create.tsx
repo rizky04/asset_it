@@ -34,19 +34,19 @@ export default function create({ assets, users }: CreateAssetsProps) {
   ];
   const { data, setData, post, processing, errors } = useForm({    
     condition_note: '',
-    status: '',
     return_date: '',
     assignment_date: '',
     document_url: null as File | null,
-    assets_id: 0,
+    asset_id: 0,
     received_by: 0,
+    // status: '',
   })
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
 
-  const status = [
-    { values: 'assigned', label: 'Assigned' },
-    { values: 'returned', label: 'returned' },
-  ];
+  // const status = [
+  //   { values: 'assigned', label: 'assigned' },
+  //   { values: 'returned', label: 'returned' },
+  // ];
 
   
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,8 +92,8 @@ export default function create({ assets, users }: CreateAssetsProps) {
                         Asset
                       </label>
                       <Select
-                        name='assets_id'
-                        onValueChange={(value) => setData('assets_id', parseInt(value))}
+                        name='asset_id'
+                        onValueChange={(value) => setData('asset_id', parseInt(value))}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Pilih Asset" />
@@ -108,7 +108,7 @@ export default function create({ assets, users }: CreateAssetsProps) {
                           ))}
                         </SelectContent>
                       </Select>
-                      <InputError message={errors.assets_id} />
+                      <InputError message={errors.asset_id} />
                     </div>
                     <div className="grid gap-2">
                       <label>
@@ -161,7 +161,7 @@ export default function create({ assets, users }: CreateAssetsProps) {
                         placeholder="Return date" />
                       <InputError message={errors.return_date} />
                     </div>
-                    <div className="grid gap-2 md:col-span-2">
+                    {/* <div className="grid gap-2 md:col-span-2">
                       <label>
                         Status Asset
                       </label>
@@ -182,7 +182,7 @@ export default function create({ assets, users }: CreateAssetsProps) {
                         </SelectContent>
                       </Select>
                       <InputError message={errors.status} />
-                    </div>
+                    </div> */}
                     <div className="grid gap-2 md:col-span-2">
                       <label>
                         Condition Note

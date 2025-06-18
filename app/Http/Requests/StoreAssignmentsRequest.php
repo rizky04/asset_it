@@ -23,12 +23,12 @@ class StoreAssignmentsRequest extends FormRequest
     {
         return [
             'asset_id' => 'required|exists:assets,id',
-            'assignment_date' => 'required|date',
-            'returned_date' => 'nullable|date|after_or_equal:assigned_at',
+            'assignment_date' => 'required|string',
+            'returned_date' => 'nullable|string',
             'condition_note' => 'nullable|string|max:255',
             'received_by' => 'required|exists:users,id',
-            'status' => 'required|in:assigned,returned',
             'document_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'status' => 'required|in:assigned,returned',
         ];
     }
 }

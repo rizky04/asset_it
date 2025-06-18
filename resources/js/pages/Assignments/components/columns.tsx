@@ -38,6 +38,7 @@ export const columns: ColumnDef<Assignments>[] = [
   {
     accessorKey: "user_id",
     header: "user_id",
+    cell:({row}) => row.original.user.name
   }, 
   {
     accessorKey: "Asset ",
@@ -64,6 +65,7 @@ export const columns: ColumnDef<Assignments>[] = [
   {
     accessorKey: "received_by",
     header: "received_by",
+    cell:({row}) => row.original.user.name
   },
   {
     accessorKey: "status",
@@ -114,6 +116,12 @@ export const columns: ColumnDef<Assignments>[] = [
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {setTimeout(() => {setIsDialogOpen(true)}, 100)}}>Delete</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {router.visit(route('assignments.returned', assignments.id))}}
+              >
+               Return
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 

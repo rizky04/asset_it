@@ -7,7 +7,10 @@ use App\Http\Requests\StoreAssignmentsRequest;
 use App\Http\Requests\UpdateAssignmentsRequest;
 use App\Models\Assets;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class AssignmentsController extends Controller
@@ -19,7 +22,7 @@ class AssignmentsController extends Controller
     {
         //
         return Inertia::render('Assignments/index', [
-            'assignments' => Assignments::all(),
+            'assignments' => Assignments::with('asset', 'user')->get(),
         ]);
     }
 
@@ -30,7 +33,7 @@ class AssignmentsController extends Controller
     {
        
         return Inertia::render('Assignments/create', [
-            'assets' => Assets::all(),
+            'assets' => Assets::where('status', 'available')->get(),
             'users' => User::all(),
         ]);
     }
@@ -41,7 +44,14 @@ class AssignmentsController extends Controller
     public function store(StoreAssignmentsRequest $request)
     {
         $data = $request->validated();
-        $data['user_id'] = auth()->user->id(); // Assuming you want to store the authenticated user ID
+
+        $asset = Assets::findOrFail($data['asset_id']);
+        if($asset){
+            $asset->status = 'assigned'; // Update asset status to assigned
+            $asset->save();
+        }
+        $data['user_id'] = Auth::user()->id; // Assuming you want to store the authenticated user ID
+        $data['status'] = "assigned"; // Assuming you want to store the authenticated user ID
         
         if($request->hasFile('document_url')){
             $image = $request->file('document_url');
@@ -58,7 +68,7 @@ class AssignmentsController extends Controller
      */
     public function show(Assignments $assignments)
     {
-        //
+        return Inertia::render('Assignments/show');
     }
 
     /**
@@ -80,8 +90,29 @@ class AssignmentsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Assignments $assignments)
+    public function destroy(Assignments $assignment)
     {
-        //
+      
+        $assignment->delete();
+        if($assignment->image){
+            Storage::delete('assets/' . basename($assignment->image)); // Delete image file if exists
+        }
+        return to_route('assignments.index');
+    }
+
+    public function returned($id){
+        $assignment = Assignments::findOrFail($id);
+        $asset = Assets::findOrFail($assignment->asset_id);
+
+        if($asset){
+            $asset->status = 'available'; // Update asset status to available
+            $asset->save();
+        } 
+
+        $assignment->status = 'returned';
+        $assignment->return_date = now();
+        $assignment->save();
+
+        return to_route('assignments.index');
     }
 }

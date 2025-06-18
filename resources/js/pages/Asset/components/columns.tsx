@@ -49,6 +49,10 @@ export const columns: ColumnDef<Asset>[] = [
     header: "brand",
   },
   {
+    accessorKey: "status",
+    header: "status",
+  },
+  {
     accessorKey: "purchase_price",
     header: "purchase_price",
     cell:({row}) => {
