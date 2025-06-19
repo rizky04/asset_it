@@ -38,42 +38,91 @@ export const columns: ColumnDef<Asset>[] = [
   },
   {
     accessorKey: "assets_code",
-    header: "assets_code",
+    header: "Code",
   },
-  {
-    accessorKey: "name",
-    header: "name",
-  },
+  // {
+  //   accessorKey: "name",
+  //   header: "name",
+  // },
   {
     accessorKey: "brand",
     header: "brand",
   },
   {
+    accessorKey: "model",
+    header: "model",
+  },
+  {
+    accessorKey: "serial_number",
+    header: "SN",
+  },
+  {
+    accessorKey: "processor",
+    header: "PROC",
+  },
+   {
+    accessorKey: "storage",
+    header: "storage",
+  },
+  {
+    accessorKey: "ram",
+    header: "RAM",
+  },
+  {
+    accessorKey: "os",
+    header: "os",
+  },
+  {
+    accessorKey: "office",
+    header: "office",
+  },
+  {
     accessorKey: "status",
     header: "status",
-  },
-  {
-    accessorKey: "purchase_price",
-    header: "purchase_price",
-    cell:({row}) => {
-      const price = parseFloat(row.getValue('purchase_price'))
-      const formatted = new Intl.NumberFormat("id-ID", 
-        { style: "currency", currency: "IDR"}).format(price);
-      return formatted
+    cell: ({ row }) => {
+      const status = row.original.status;
+  
+      const statusColors: { [key: string]: string } = {
+        available: "bg-green-100 text-green-800",
+        assigned: "bg-blue-100 text-blue-800",
+        maintenance: "bg-yellow-100 text-yellow-800",
+        damaged: "bg-red-100 text-red-800",
+        disposed: "bg-gray-200 text-gray-800",
+      };
+  
+      return (
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+            statusColors[status] || "bg-gray-100 text-gray-800"
+          }`}
+        >
+          {status}
+        </span>
+      );
     }
   },
-  {
-    accessorKey: "current_value",
-    header: "current_value",
-    cell:({row}) => {
-      const current_value = parseFloat(row.getValue('current_value'))
-      const formatted = new Intl.NumberFormat("id-ID",{
-         style: "currency", 
-         currency: "IDR"
-        }).format(current_value);
-      return formatted
-    }
-  },
+  // {
+  //   accessorKey: "purchase_price",
+  //   header: "purchase_price",
+  //   cell:({row}) => {
+  //     const price = parseFloat(row.getValue('purchase_price'))
+  //     const formatted = new Intl.NumberFormat("id-ID", 
+  //       { style: "currency", currency: "IDR"}).format(price);
+  //     return formatted
+  //   }
+  // },
+  // {
+  //   accessorKey: "current_value",
+  //   header: "current_value",
+  //   cell:({row}) => {
+  //     const current_value = parseFloat(row.getValue('current_value'))
+  //     const formatted = new Intl.NumberFormat("id-ID",{
+  //        style: "currency", 
+  //        currency: "IDR"
+  //       }).format(current_value);
+  //     return formatted
+  //   }
+  // },
   {
     accessorKey: "category",
     header: "Category",

@@ -70,6 +70,22 @@ export const columns: ColumnDef<Assignments>[] = [
   {
     accessorKey: "status",
     header: "status",
+    cell:({row}) => {
+      const status = row.original.status
+      return (
+        <span
+        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+          status === "returned"
+            ? "bg-red-100 text-red-800"
+            : status === "assigned"
+            ? "bg-blue-100 text-blue-800"
+            : "bg-gray-100 text-gray-800"
+        }`}
+      >
+        {status}
+      </span>
+      )
+    }
   },
   {
     accessorKey: "document_url",
@@ -121,6 +137,12 @@ export const columns: ColumnDef<Assignments>[] = [
                 onClick={() => {router.visit(route('assignments.returned', assignments.id))}}
               >
                Return
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {router.visit(route('assignments.assign', assignments.id))}}
+              >
+              Assign to
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

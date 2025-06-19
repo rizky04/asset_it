@@ -115,4 +115,19 @@ class AssignmentsController extends Controller
 
         return to_route('assignments.index');
     }
+    public function assign($id){
+        $assignment = Assignments::findOrFail($id);
+        $asset = Assets::findOrFail($assignment->asset_id);
+
+        if($asset){
+            $asset->status = 'assigned'; // Update asset status to assigned
+            $asset->save();
+        } 
+
+        $assignment->status = 'assigned';
+        $assignment->return_date = null;
+        $assignment->save();
+
+        return to_route('assignments.index');
+    }
 }

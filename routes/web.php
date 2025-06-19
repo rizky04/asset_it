@@ -16,6 +16,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('asset', AssetsController::class);
     Route::resource('assignments', AssignmentsController::class);
     Route::get('returned/{id}', [AssignmentsController::class, 'returned'])->name('assignments.returned');
+    Route::get('assign/{id}', [AssignmentsController::class, 'assign'])->name('assignments.assign');
+    Route::get('/assets/export', [AssetsController::class, 'export']);
+    Route::post('/assets/import', [AssetsController::class, 'import']);
     Route::get('/assets/last-number/{categoryId}', [AssetsController::class, 'getlastAssetsNumber'])->name('assets.last-number');
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');

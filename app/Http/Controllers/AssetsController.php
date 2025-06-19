@@ -9,6 +9,10 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Exports\AssetsExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\AssetsImport;
+use Illuminate\Http\Request;
 
 class AssetsController extends Controller
 {
@@ -122,4 +126,19 @@ class AssetsController extends Controller
             'last_number' => $lastNumber,
         ]);
     }
+
+    public function export()
+    {
+        return Excel::download(new AssetsExport, 'assets.xlsx');
+    }
+    public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls'
+    ]);
+
+    Excel::import(new AssetsImport, $request->file('file'));
+
+    return redirect()->back()->with('success', 'Data berhasil diimport.');
+}
 }

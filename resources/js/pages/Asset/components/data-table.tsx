@@ -30,10 +30,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { FormEvent, useRef } from "react";
+
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Link } from "@inertiajs/react"
+import { router } from '@inertiajs/react'
 
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 
@@ -52,6 +55,24 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState("")
+  const fileInput = useRef<HTMLInputElement | null>(null);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10, // default 10 row per page
+  });
+  
+  const handleExport = () => {
+    window.location.href = "/assets/export";
+  };
+
+  const handleImport = (e: FormEvent) => {
+    e.preventDefault();
+    if (fileInput.current?.files?.[0]) {
+      const formData = new FormData();
+      formData.append("file", fileInput.current.files[0]);
+      router.post("/assets/import", formData);
+    }
+  };
 
 
   const table = useReactTable({
@@ -63,14 +84,23 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onPaginationChange: setPagination,
     onGlobalFilterChange: setGlobalFilter, // ← handler untuk global filter
     globalFilterFn: "includesString", // default filter fn
     state: {
       sorting,
       columnFilters,
+      pagination,
       globalFilter, // ← tambahkan ini
     },
   })
+
+  const totalRows = table.getFilteredRowModel().rows.length;
+const pageIndex = table.getState().pagination.pageIndex;
+const pageSize = table.getState().pagination.pageSize;
+const start = pageIndex * pageSize + 1;
+const end = Math.min(start + pageSize - 1, totalRows);
+
 
   return (
     <>
@@ -85,13 +115,20 @@ export function DataTable<TData, TValue>({
           onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm"
         />
-        <div className="grid grid-cols-2 gap-2">
-          <div>
+        <div className="flex flex-wrap gap-2 items-center">
+        
+            <form onSubmit={handleImport} encType="multipart/form-data" className="flex items-center gap-2">
+              <Input type="file" name="file" className="text-sm h-10 px-2 py-1 w-40" ref={fileInput} accept=".xlsx,.xls" />
+              <Button type="submit">
+                Import
+              </Button>
+            </form>
+            <Button onClick={handleExport}>
+              Export
+            </Button>
             <Button>
               <Link href={route("asset.create")}>New Asset</Link>
             </Button>
-          </div>
-          <div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="ml-auto">
@@ -118,11 +155,11 @@ export function DataTable<TData, TValue>({
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
         </div>
       </div>
-      <div className="rounded-md border">
-        <Table>
+      {/* <div className="rounded-md border">   */}
+        <div className="w-full overflow-x-auto rounded-md border">
+        <Table className="min-w-[640px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -165,7 +202,11 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-between py-4">
+      <div className="text-sm text-muted-foreground">
+    Menampilkan {start}–{end} dari {totalRows} data
+  </div>
+      <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"
@@ -182,7 +223,23 @@ export function DataTable<TData, TValue>({
         >
           Next
         </Button>
+        <select
+      className="border px-2 py-1 rounded text-sm"
+      value={pagination.pageSize}
+      onChange={(e) => {
+        setPagination({ ...pagination, pageSize: Number(e.target.value) });
+      }}
+    >
+      {[10, 20, 30, 40, 50].map((pageSize) => (
+        <option key={pageSize} value={pageSize}>
+          Tampilkan {pageSize}
+        </option>
+      ))}
+    </select>
+        </div>
+       
       </div>
+      
     </>
   )
 }
