@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use App\Exports\AssetsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\AssetsImport;
+use App\Exports\AssetsTemplateExport;
 use Illuminate\Http\Request;
 
 class AssetsController extends Controller
@@ -129,7 +130,10 @@ class AssetsController extends Controller
 
     public function export()
     {
-        return Excel::download(new AssetsExport, 'assets.xlsx');
+        $date = now()->format('Y-m-d_H-i-s');
+        $filename = 'assets_' . $date . '.xlsx';
+        return Excel::download(new AssetsExport, $filename);
+        // return Excel::download(new AssetsExport, 'assets.xlsx');
     }
     public function import(Request $request)
 {
@@ -140,5 +144,12 @@ class AssetsController extends Controller
     Excel::import(new AssetsImport, $request->file('file'));
 
     return redirect()->back()->with('success', 'Data berhasil diimport.');
+}
+
+public function downloadTemplate()
+{
+    $date = now()->format('Y-m-d_H-i-s');
+    $filename = 'template_import_assets_' . $date . '.xlsx';
+    return Excel::download(new AssetsTemplateExport, $filename);
 }
 }

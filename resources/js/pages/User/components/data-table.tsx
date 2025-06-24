@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({
   });
 
   const handleExport = () => {
-    window.location.href = "/assets/export";
+    window.location.href = "/users/export";
   };
 
   const handleImport = (e: FormEvent) => {
@@ -83,13 +83,13 @@ export function DataTable<TData, TValue>({
     if (fileInput.current?.files?.[0]) {
       const formData = new FormData();
       formData.append("file", fileInput.current.files[0]);
-      router.post("/assets/import", formData);
+      router.post("/users/import", formData);
       setIsDialogOpen(false)
     }
   };
 
   const handleDownloadTemplate = () => {
-    window.location.href = "/assets/template";
+    window.location.href = "/users/template";
   };
 
 
@@ -148,7 +148,7 @@ export function DataTable<TData, TValue>({
           Import
           </Button>
           <Button>
-            <Link href={route("asset.create")}>New Asset</Link>
+            <Link href={route("user.create")}>New user</Link>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

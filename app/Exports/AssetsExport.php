@@ -15,7 +15,7 @@ class AssetsExport implements FromCollection, WithHeadings
     public function collection()
     {
         return Assets::select([
-            'assets_code', 'name', 'brand', 'model', 'serial_number', 'processor', 'storage', 'ram',
+            'id','assets_code', 'name', 'brand', 'model', 'serial_number', 'processor', 'storage', 'ram',
             'ukuran_layar', 'os', 'office', 'software', 'accessories', 'warranty', 'received_date',
             'purchase_date', 'warranty_expiration', 'purchase_price', 'current_value', 'supplier',
             'status', 'location', 'notes', 'image', 'category_id', 'user_id'
@@ -25,7 +25,7 @@ class AssetsExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'asset_code', 'name', 'brand', 'model', 'serial_number', 'processor', 'storage', 'ram',
+            'id','asset_code', 'name', 'brand', 'model', 'serial_number', 'processor', 'storage', 'ram',
             'ukuran_layar', 'os', 'office', 'software', 'accessories', 'warranty', 'received_date',
             'purchase_date', 'warranty_expiration', 'purchase_price', 'current_value', 'supplier',
             'status', 'location', 'notes', 'image', 'category_id', 'user_id'

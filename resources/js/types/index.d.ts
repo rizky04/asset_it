@@ -41,6 +41,23 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface Users{
+    id: number;
+    name: string;
+    email?: string;
+    position?: string;
+    departement?: string;
+    address?: string;
+    access?: string;
+    password?: string;
+    business_unit?: string;
+    work_location?: string;
+    phone?: string;
+    email_verified_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface Category {
     id: number;
     name: string;

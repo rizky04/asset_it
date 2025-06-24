@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AssetAssignmentsTemplateExport;
 use App\Models\Assignments;
 use App\Http\Requests\StoreAssignmentsRequest;
 use App\Http\Requests\UpdateAssignmentsRequest;
@@ -11,7 +12,13 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 
+use App\Imports\AssetsImport;
+use App\Exports\AssetsTemplateExport;
+use App\Exports\AssignmentsExport;
+use App\Imports\AssignmentsImport;
 
 class AssignmentsController extends Controller
 {
@@ -130,4 +137,27 @@ class AssignmentsController extends Controller
 
         return to_route('assignments.index');
     }
+
+    public function export()
+{
+    return Excel::download(new AssignmentsExport, 'asset_assignments.xlsx');
+}
+
+public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls'
+    ]);
+
+    Excel::import(new AssignmentsImport, $request->file('file'));
+
+    return back()->with('success', 'Data berhasil diimport!');
+}
+
+public function downloadTemplate()
+{
+    return Excel::download(new AssetAssignmentsTemplateExport, 'template_asset_assignments.xlsx');
+}
+
+
 }

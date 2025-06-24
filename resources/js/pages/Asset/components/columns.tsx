@@ -57,25 +57,44 @@ export const columns: ColumnDef<Asset>[] = [
     header: "SN",
   },
   {
-    accessorKey: "processor",
-    header: "PROC",
+    header: "Spesifikasi",
+    // accessorKey: "processor",
+    cell: ({ row }) => {
+      const processor = row.original.processor || "-";
+      const storage = row.original.storage || "-";
+      const ram = row.original.ram || "-";
+      const ukuran_layar = row.original.ukuran_layar || "-";
+      const os = row.original.os || "-";
+      const office = row.original.office || "-";
+      return (
+        <div className="flex flex-col">
+          {/* <span className="font-medium">{serial}</span> */}
+          <span className="text-xs text-gray-500">{processor}</span>
+          <span className="text-xs text-gray-500">{storage}</span>
+          <span className="text-xs text-gray-500">{ram}</span>
+          <span className="text-xs text-gray-500">{os}</span>
+          <span className="text-xs text-gray-500">{office}</span>
+          <span className="text-xs text-gray-500">{ukuran_layar}</span>
+        </div>
+      );
+    }
   },
-   {
-    accessorKey: "storage",
-    header: "storage",
-  },
-  {
-    accessorKey: "ram",
-    header: "RAM",
-  },
-  {
-    accessorKey: "os",
-    header: "os",
-  },
-  {
-    accessorKey: "office",
-    header: "office",
-  },
+  //  {
+  //   accessorKey: "storage",
+  //   header: "storage",
+  // },
+  // {
+  //   accessorKey: "ram",
+  //   header: "RAM",
+  // },
+  // {
+  //   accessorKey: "os",
+  //   header: "os",
+  // },
+  // {
+  //   accessorKey: "office",
+  //   header: "office",
+  // },
   {
     accessorKey: "status",
     header: "status",

@@ -47,7 +47,7 @@ class StoreAssetsRequest extends FormRequest
             'location' => 'nullable|string|max:100',
             'notes' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category_id' => 'nullable|string|max:255',
+            'category_id' => 'nullable|max:255',
         ];
     }
 
