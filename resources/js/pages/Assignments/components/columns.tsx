@@ -36,19 +36,16 @@ export const columns: ColumnDef<Assignments>[] = [
     cell: ({ row }) => row.index + 1,
   },
   {
-    accessorKey: "user_id",
-    header: "user_id",
-    cell:({row}) => row.original.user.name
+    accessorKey: "user",
+    header: "user",
   }, 
   {
-    accessorKey: "Asset ",
-    header: "Asset",
-    cell:({row}) => row.original.asset.name
+    accessorKey: "asset",
+    header: "asset",
   },
   {
-    accessorKey: "Asset Code",
-    header: "Asset Code",
-    cell:({row}) => row.original.asset.assets_code
+    accessorKey: "assets_code",
+    header: "assets_code",
   },
   {
     accessorKey: "assignment_date",
@@ -63,9 +60,8 @@ export const columns: ColumnDef<Assignments>[] = [
     header: "condition_note",
   },
   {
-    accessorKey: "received_by",
-    header: "received_by",
-    cell:({row}) => row.original.user.name
+    accessorKey: "receivedBy",
+    header: "receivedBy",
   },
   {
     accessorKey: "status",
@@ -152,7 +148,7 @@ export const columns: ColumnDef<Assignments>[] = [
           {/* <AlertDialogTrigger>Open</AlertDialogTrigger> */}
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure delete data {assignments.asset.assets_code} ?</AlertDialogTitle>
+              <AlertDialogTitle>Are you absolutely sure delete data {assignments.asset} ?</AlertDialogTitle>
               <AlertDialogDescription>
                 This action cannot be undone. This will permanently delete your account
                 and remove your data from our servers.

@@ -32,4 +32,9 @@ class Assignments extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function receivedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'received_by', 'id');
+    }
 }

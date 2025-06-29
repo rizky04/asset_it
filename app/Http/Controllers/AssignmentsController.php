@@ -19,6 +19,7 @@ use App\Imports\AssetsImport;
 use App\Exports\AssetsTemplateExport;
 use App\Exports\AssignmentsExport;
 use App\Imports\AssignmentsImport;
+use Illuminate\Support\Facades\DB;
 
 class AssignmentsController extends Controller
 {
@@ -27,10 +28,18 @@ class AssignmentsController extends Controller
      */
     public function index()
     {
-        //
+        $data = DB::table('assignments')
+        ->join('assets', 'assignments.asset_id', '=', 'assets.id')
+        ->join('users', 'assignments.user_id', '=', 'users.id')
+        ->join('users as rb', 'assignments.received_by', '=', 'rb.id')
+        ->select('assignments.*', 'assets.name as asset', 'assets.assets_code as assets_code', 'users.name as user', 'rb.name as receivedBy')
+        ->get();
+        
+       
         return Inertia::render('Assignments/index', [
-            'assignments' => Assignments::with('asset', 'user')->get(),
+            'assignments' => $data,
         ]);
+        // 'assignments' => Assignments::with(['asset', 'user', 'receivedBy'])->get(),
     }
 
     /**
@@ -73,9 +82,20 @@ class AssignmentsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Assignments $assignments)
+    public function show(Assignments $assignment)
     {
-        return Inertia::render('Assignments/show');
+    //      $data = DB::table('assignments')
+    //     ->join('assets', 'assignments.asset_id', '=', 'assets.id')
+    //     ->join('users', 'assignments.user_id', '=', 'users.id')
+    //     ->join('users as rb', 'assignments.received_by', '=', 'rb.id')
+    //     ->select('assignments.*', 'assets.name as asset', 'assets.assets_code as assets_code', 'users.name as user', 'rb.name as receivedBy')
+    //     ->where('assignments.id', $assignment->id)
+    //     ->get();
+    //    $data =  Assignments::with(['asset', 'user', 'receivedBy'])->findOrFail($assignment->id);
+    //     dd($data);
+        return Inertia::render('Assignments/show', [
+            'assignments' => Assignments::with(['asset', 'user', 'receivedBy'])->findOrFail($assignment->id),
+        ]);
     }
 
     /**

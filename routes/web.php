@@ -5,6 +5,7 @@ use App\Http\Controllers\AssignmentsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -33,9 +34,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/assets/template', [AssetsController::class, 'downloadTemplate']);
     Route::get('/assets/last-number/{categoryId}', [AssetsController::class, 'getlastAssetsNumber'])->name('assets.last-number');
     
-    Route::get('dashboard', function () {
-    return Inertia::render('dashboard');
-    })->name('dashboard');
+    // Route::get('dashboard', function () {
+    // return Inertia::render('dashboard');
+    // })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 require __DIR__.'/settings.php';

@@ -102,11 +102,13 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onPaginationChange: setPagination,
     onGlobalFilterChange: setGlobalFilter, // ← handler untuk global filter
     globalFilterFn: "includesString", // default filter fn
     state: {
       sorting,
       columnFilters,
+      pagination,
       globalFilter, // ← tambahkan ini
     },
   })
@@ -120,11 +122,7 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter name product..."
-          // value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          // onChange={(event) =>
-          //   table.getColumn("name")?.setFilterValue(event.target.value)
-          // }
-          value={globalFilter ?? ""}
+          value={globalFilter ?? ""} // ini yang tidak berfungsi
           onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm"
         />

@@ -1,4 +1,11 @@
-export default function FormSerahTerima() {
+import { print } from "@/types";
+
+interface PrintAssignments{
+  assignments: print
+}
+
+export default function show({ assignments }: PrintAssignments) {
+  console.log(assignments);
     return (
       <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl space-y-6 text-sm">
         <h1 className="text-2xl font-bold text-center">
@@ -11,23 +18,23 @@ export default function FormSerahTerima() {
         <div>
           <h2 className="font-semibold">Pihak Pertama:</h2>
           <div className="grid grid-cols-[160px_10px_1fr] gap-2">
-            <div>Nama</div><div>:</div><div>Achmad Batul</div>
-            <div>Jabatan</div><div>:</div><div>IT Hardware & Infrastructure Staff</div>
-            <div>Departemen</div><div>:</div><div>IT</div>
+            <div>Nama</div><div>:</div><div>{assignments.user.name}</div>
+            <div>Jabatan</div><div>:</div><div>{assignments.user.position}</div>
+            <div>Departemen</div><div>:</div><div>{assignments.user.departement}</div>
           </div>
         </div>
         <p>
-        Dalam hal ini bertindak untuk dan atas nama <b>PT. Grahadhika Sarana Purnajati</b> sesuai dengan kewenangan jabatannya yang selanjutnya disebut sebagai <b><u>Pihak Pertama</u></b> atau <b><u>Yang Menyerahkan</u></b>
+        Dalam hal ini bertindak untuk dan atas nama <b>{assignments.user.business_unit}</b> sesuai dengan kewenangan jabatannya yang selanjutnya disebut sebagai <b><u>Pihak Pertama</u></b> atau <b><u>Yang Menyerahkan</u></b>
         </p>
   
         {/* Pihak Kedua */}
         <div>
           <h2 className="font-semibold">Pihak Kedua:</h2>
           <div className="grid grid-cols-[160px_10px_1fr] gap-2">
-            <div>Nama</div><div>:</div><div>Erny Indrawati</div>
-            <div>Jabatan</div><div>:</div><div>Internal Audit Manager</div>
-            <div>Departemen</div><div>:</div><div>Internal Audit</div>
-            <div>Alamat</div><div>:</div><div>Puri Asri Regency E-20</div>
+            <div>Nama</div><div>:</div><div>{assignments.received_by.name}</div>
+            <div>Jabatan</div><div>:</div><div>{assignments.received_by.position}</div>
+            <div>Departemen</div><div>:</div><div>{assignments.received_by.departement}</div>
+            <div>Alamat</div><div>:</div><div>{assignments.received_by.address}</div>
           </div>
         </div>
 
@@ -41,15 +48,15 @@ export default function FormSerahTerima() {
         <div>
           <h2 className="font-semibold">1. 1 (satu) Buah Laptop, dengan data spesifikasi sebagai berikut :</h2>
           <div className="grid grid-cols-[160px_10px_1fr] gap-2">
-            <div><li>Merek</li></div><div>:</div><div>Lenovo</div>
-            <div><li>Tipe</li></div><div>:</div><div>14IAH8</div>
-            <div><li>Serial Number</li></div><div>:</div><div>PF56KGYE</div>
-            <div><li>Processor</li></div><div>:</div><div>Intel Core i5 12450H</div>
-            <div><li>Storage</li></div><div>:</div><div>SSD 512GB</div>
-            <div><li>RAM</li></div><div>:</div><div>16GB</div>
-            <div><li>Ukuran Layar</li></div><div>:</div><div>11 Inch</div>
-            <div><li>Sistem Operasi</li></div><div>:</div><div>Windows 11 Home</div>
-            <div><li>Office</li></div><div>:</div><div>MS. Office 365 Business</div>
+            <div><li>Brand</li></div><div>:</div><div>{assignments.asset.brand}</div>
+            <div><li>Type</li></div><div>:</div><div>{assignments.asset.model}</div>
+            <div><li>Serial Number</li></div><div>:</div><div>{assignments.asset.serial_number}</div>
+            <div><li>Processor</li></div><div>:</div><div>{assignments.asset.processor}</div>
+            <div><li>Storage</li></div><div>:</div><div>{assignments.asset.storage}</div>
+            <div><li>RAM</li></div><div>:</div><div>{assignments.asset.ram}</div>
+            <div><li>Ukuran Layar</li></div><div>:</div><div>{assignments.asset.ukuran_layar}</div>
+            <div><li>Sistem Operasi</li></div><div>:</div><div>{assignments.asset.os}</div>
+            <div><li>Office</li></div><div>:</div><div>{assignments.asset.office}</div>
           </div>
         </div>
   
@@ -57,12 +64,12 @@ export default function FormSerahTerima() {
         <div>
           <h2 className="font-semibold">2. Software Terinstall, antara lain :</h2>
           <ul className="list-disc ml-6">
-            <li>Avast Free Antivirus</li>
-            <li>Google Chrome</li>
+            <li>{assignments.asset.software}</li>
+            {/* <li>Google Chrome</li>
             <li>Anydesk</li>
             <li>Microsoft Edge</li>
             <li>Office 365 Business</li>
-            <li>Tight VNC</li>
+            <li>Tight VNC</li> */}
           </ul>
         </div>
   
@@ -70,8 +77,8 @@ export default function FormSerahTerima() {
         <div>
           <h2 className="font-semibold">3. Kelengkapan tambahan, antara lain :</h2>
           <ul className="list-disc ml-6">
-            <li>Charger</li>
-            <li>Tas</li>
+            <li>{assignments.asset.accessories}</li>
+            {/* <li>Tas</li> */}
           </ul>
         </div>
 
@@ -94,28 +101,28 @@ export default function FormSerahTerima() {
         {/* Tanda Tangan */}
         <div className="grid grid-cols-4 gap-8 text-center mt-10">
           <div>
-            <p>Bandung, [Tanggal]</p>
+            <p>Surabaya, {assignments.assignment_date}</p>
             <p className="font-semibold">Mengetahui,</p>
             <div className="h-24"></div>
-            <p>( Achmad Batul )</p>
+            <p>{assignments.user.name}</p>
           </div>
           <div>
             <p>&nbsp;</p>
             <p className="font-semibold">Mengetahui,</p>
             <div className="h-24"></div>
-            <p>( Erny Indrawati )</p>
+            <p>{assignments.user.name}</p>
           </div>
           <div>
             <p>&nbsp;</p>
             <p className="font-semibold">Menyetujui,</p>
             <div className="h-24"></div>
-            <p>( Erny Indrawati )</p>
+            <p>{assignments.received_by.name}</p>
           </div>
           <div>
             <p>&nbsp;</p>
             <p className="font-semibold">Menyetujui,</p>
             <div className="h-24"></div>
-            <p>( Erny Indrawati )</p>
+            <p>{assignments.received_by.name}</p>
           </div>
         </div>
       </div>

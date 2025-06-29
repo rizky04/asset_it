@@ -57,6 +57,22 @@ export interface Users{
     created_at: string;
     updated_at: string;
 }
+export interface ReceivedBy{
+    id: number;
+    name: string;
+    email?: string;
+    position?: string;
+    departement?: string;
+    address?: string;
+    access?: string;
+    password?: string;
+    business_unit?: string;
+    work_location?: string;
+    phone?: string;
+    email_verified_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
 
 export interface Category {
     id: number;
@@ -109,8 +125,27 @@ export interface Assignments {
     received_by: number;
     status: string;
     document_url?: string;
+    asset: string;
+    assets_code: string;
+    user: string;
+    receivedBy: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface print {
+    id: number;
+    asset_id: number;
+    user_id: number;
+    assignment_date : string;
+    return_date: string;
+    condition_note: string;
+    received_by: Users;
+    status: string;
+    document_url?: string;
     asset: Asset;
-    user: User;
+    user: Users;
+    receivedBy: Users;
     created_at: string;
     updated_at: string;
 }
