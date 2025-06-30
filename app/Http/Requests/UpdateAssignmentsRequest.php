@@ -11,7 +11,7 @@ class UpdateAssignmentsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class UpdateAssignmentsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'asset_id' => 'nullable',
+            'assignment_date' => 'nullable',
+            'returned_date' => 'nullable',
+            'condition_note' => 'nullable',
+            'received_by' => 'nullable',
+            'status' => 'nullable',
+            'document_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

@@ -101,17 +101,46 @@ class AssignmentsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Assignments $assignments)
+    public function edit(Assignments $assignment)
     {
         //
+        return Inertia::render('Assignments/edit', [
+            'assignments' => Assignments::findOrFail($assignment->id),
+            'assets' => Assets::all(),
+            'users' => User::all(),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAssignmentsRequest $request, Assignments $assignments)
+    public function update(UpdateAssignmentsRequest $request, Assignments $assignment)
     {
         //
+        $data = $request->validated();
+        $asset = Assets::findOrFail($data['asset_id']);
+        if($asset){
+            if($data['status'] == 'returned'){
+                $asset->status = 'available'; // Update asset status to available
+            } else {
+                $asset->status = 'assigned'; // Update asset status to assigned
+            }
+            // $asset->status = 'assigned'; // Update asset status to assigned
+            $asset->save();
+        }
+        $data['user_id'] = Auth::user()->id; // Assuming you want to store the authenticated user ID
+        // $data['status'] = "assigned"; // Assuming you want to store the authenticated user ID
+        
+        if($request->hasFile('document_url')){
+            $image = $request->file('document_url');
+            $imagePath = $image->storeAs('assets', $image->hashName());
+            $data['document_url'] = $imagePath;
+        }
+        $assignment->update($data);
+        if($assignment->image){
+            Storage::delete('assets/' . basename($assignment->image)); // Delete image file if exists
+        }
+        return to_route('assignments.index');
     }
 
     /**
