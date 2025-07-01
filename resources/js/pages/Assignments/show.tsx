@@ -1,19 +1,77 @@
 import { print } from "@/types";
+import { useRef } from "react";
+import SignatureCanvas from 'react-signature-canvas'
+import { Head, router, useForm } from '@inertiajs/react';
+import React, { useState } from 'react'
+import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
 
-interface PrintAssignments{
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Input } from "@/components/ui/input";
+import InputError from "@/components/input-error";
+
+interface PrintAssignments {
   assignments: print
 }
 
 export default function show({ assignments }: PrintAssignments) {
+  const sigPad = useRef<SignatureCanvas>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // const { data, setData, post, processing, errors } = useForm({
+  //   received_by: assignments.received_by.id,
+  //   assignment_id: assignments.id,
+  //   signature: '',
+  // });
+  // console.log(data);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const signature = sigPad.current?.toDataURL('image/png');
+    // setData('signature', signature || '');
+
+    router.post(route('approval.store'), {
+      signature: signature || '',
+         received_by: assignments.received_by.id,
+    assignment_id: assignments.id,
+    },{
+      onSuccess: () => {
+        toast.success('approval created successfully');
+        setIsDialogOpen(false);
+      },
+      onError: () => {
+        toast.error('Failed to create approval');
+      },
+    });
+  };
+
+  const clearSignature = () => {
+    sigPad.current?.clear();
+    // setData('signature', '');
+  };
+
   console.log(assignments);
-    return (
+  return (
+    <>
       <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl space-y-6 text-sm">
         <h1 className="text-2xl font-bold text-center">
           SERAH TERIMA FASILITAS PERUSAHAAN
         </h1>
-  
+
         <p>Yang bertandatangan di bawah ini:</p>
-  
+
         {/* Pihak Pertama */}
         <div>
           <h2 className="font-semibold">Pihak Pertama:</h2>
@@ -24,9 +82,9 @@ export default function show({ assignments }: PrintAssignments) {
           </div>
         </div>
         <p>
-        Dalam hal ini bertindak untuk dan atas nama <b>{assignments.user.business_unit}</b> sesuai dengan kewenangan jabatannya yang selanjutnya disebut sebagai <b><u>Pihak Pertama</u></b> atau <b><u>Yang Menyerahkan</u></b>
+          Dalam hal ini bertindak untuk dan atas nama <b>{assignments.user.business_unit}</b> sesuai dengan kewenangan jabatannya yang selanjutnya disebut sebagai <b><u>Pihak Pertama</u></b> atau <b><u>Yang Menyerahkan</u></b>
         </p>
-  
+
         {/* Pihak Kedua */}
         <div>
           <h2 className="font-semibold">Pihak Kedua:</h2>
@@ -39,11 +97,11 @@ export default function show({ assignments }: PrintAssignments) {
         </div>
 
         <p>Dalam hal ini bertindak untuk dan atas nama dirinya sendiri sesuai dengan jabatan, yang selanjutnya disebut  sebagai <b><u>Pihak Kedua</u></b> atau <b><u>Yang Menerima</u></b>.</p>
-  
+
         <p>
-        Bahwa untuk menunjang kinerja dari Pihak Kedua, maka dengan ini Pihak Pertama telah menyerahkan fasilitas perusahaan untuk digunakan oleh Pihak Kedua sesuai dengan data dibawah ini, antara Lain :
+          Bahwa untuk menunjang kinerja dari Pihak Kedua, maka dengan ini Pihak Pertama telah menyerahkan fasilitas perusahaan untuk digunakan oleh Pihak Kedua sesuai dengan data dibawah ini, antara Lain :
         </p>
-  
+
         {/* Daftar Fasilitas */}
         <div>
           <h2 className="font-semibold">1. 1 (satu) Buah Laptop, dengan data spesifikasi sebagai berikut :</h2>
@@ -59,7 +117,7 @@ export default function show({ assignments }: PrintAssignments) {
             <div><li>Office</li></div><div>:</div><div>{assignments.asset.office}</div>
           </div>
         </div>
-  
+
         {/* Software */}
         <div>
           <h2 className="font-semibold">2. Software Terinstall, antara lain :</h2>
@@ -72,7 +130,7 @@ export default function show({ assignments }: PrintAssignments) {
             <li>Tight VNC</li> */}
           </ul>
         </div>
-  
+
         {/* Kelengkapan Tambahan */}
         <div>
           <h2 className="font-semibold">3. Kelengkapan tambahan, antara lain :</h2>
@@ -83,10 +141,10 @@ export default function show({ assignments }: PrintAssignments) {
         </div>
 
         <p>
-        Fasilitas tersebut diserahkan oleh Pihak Pertama kepada Pihak Kedua berkaitan dengan jabatannya sebagai <b>Marcomm & PR Intern </b>                         
-        dengan dilakukannya serah terima ini maka berlaku beberapa hal yang harus diperhatikan, antara lain:
+          Fasilitas tersebut diserahkan oleh Pihak Pertama kepada Pihak Kedua berkaitan dengan jabatannya sebagai <b>Marcomm & PR Intern </b>
+          dengan dilakukannya serah terima ini maka berlaku beberapa hal yang harus diperhatikan, antara lain:
         </p>
-  
+
         {/* Pernyataan */}
         <div className="space-y-3">
           <p>1. Bahwa Fasilitas perusahaan yang diterima oleh Pihak Kedua tidak diperbolehkan untuk dipindah tangankan dan atau dilakukan pengalihan fasilitas kepada orang lain selain dan tanpa adanya persetujuan atasan dan Persetujuan Pihak Pertama.</p>
@@ -95,9 +153,9 @@ export default function show({ assignments }: PrintAssignments) {
           <p>4. Bahwa Pihak Kedua bertanggung Jawab secara penuh atas data, isi, konten dan dokumen yang berada didalam fasilitas perusahaan tersebut. Serta Pihak Kedua dilarang keras untuk menggunakan fasilitas perusahaan tersebut diluar kepentingan dan tujuan perusahaan yang dilakukan di dalam jam kerja maupun diluar jam kerja.</p>
           <p>5. Apabila Pihak Kedua sudah tidak bekerja kembali dan atau mengundurkan diri. maka Pihak Kedua berkewajiban mengembalikan fasiltas perusahaan tersebut dalam keadaan baik sebagaimana mestinya.</p>
         </div>
-       <p>
-       Demikian serah terima fasilitas perusahaan ini dibuat dan disetujui oleh PARA PIHAK dan menjadi hukum yang dapat dipertanggung jawabkan dikemudian hari.
-       </p>
+        <p>
+          Demikian serah terima fasilitas perusahaan ini dibuat dan disetujui oleh PARA PIHAK dan menjadi hukum yang dapat dipertanggung jawabkan dikemudian hari.
+        </p>
         {/* Tanda Tangan */}
         <div className="grid grid-cols-4 gap-8 text-center mt-10">
           <div>
@@ -121,11 +179,67 @@ export default function show({ assignments }: PrintAssignments) {
           <div>
             <p>&nbsp;</p>
             <p className="font-semibold">Menyetujui,</p>
-            <div className="h-24"></div>
+            <div className="h-24">
+
+              <Button onClick={() => { setIsDialogOpen(true) }}>Approval</Button>
+
+            </div>
             <p>{assignments.received_by.name}</p>
+
           </div>
         </div>
       </div>
-    );
-  }
-  
+
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Assignment Tanda Tangan</AlertDialogTitle>
+          <AlertDialogDescription>
+           
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <form
+              onSubmit={handleSubmit}
+              encType="multipart/form-data"
+              className="flex flex-col items-center gap-4"
+            >
+              <SignatureCanvas
+                penColor="black"
+                ref={sigPad}
+                canvasProps={{
+                  width: 400,
+                  height: 200,
+                  className: 'border border-gray-300 rounded-md',
+                }}
+              />
+              {/* <InputError message={errors.signature} /> */}
+             
+              
+
+              <div className="flex gap-3">
+
+                <Button variant="destructive" onClick={clearSignature}>Clear</Button>
+
+                <Button type="submit" >
+                  {/* {processing ? 'Menyimpan...' : 'Submit Approval'} */}
+                  simpan
+                </Button>
+
+                <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
+                  cancel
+                </Button>
+              </div>
+            </form>
+
+        <AlertDialogFooter>
+          {/* <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+            Cancel
+          </AlertDialogCancel> */}
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+     
+    </>
+  );
+}

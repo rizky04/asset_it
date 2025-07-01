@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\AssetsController;
 use App\Http\Controllers\AssignmentsController;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/assets/template', [AssetsController::class, 'downloadTemplate']);
     Route::get('/assets/last-number/{categoryId}', [AssetsController::class, 'getlastAssetsNumber'])->name('assets.last-number');
     
+    Route::resource('approval', ApprovalController::class);
     // Route::get('dashboard', function () {
     // return Inertia::render('dashboard');
     // })->name('dashboard');
