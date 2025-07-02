@@ -22,8 +22,8 @@ class StoreApprovalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'received_by' => 'required',
-            'assignment_id' => 'required',
+            'user_id' => 'nullable',
+            'assignment_id' => 'nullable',
             'signature' => 'nullable',
         ];
     }

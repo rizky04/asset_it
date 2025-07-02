@@ -3,7 +3,6 @@ import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
 import { Asset } from '@/types'
 import { Head } from '@inertiajs/react';
-import { console } from 'inspector';
 import React from 'react'
 
 
@@ -11,7 +10,7 @@ interface DetailAssetProps {
     asset: Asset
 }
 export default function show({ asset }: DetailAssetProps) {
-    
+   console.log(asset);
     const breadcrumbs = [
     {
         title: 'Asset / Show',

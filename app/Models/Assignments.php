@@ -37,4 +37,8 @@ class Assignments extends Model
     {
         return $this->belongsTo(User::class, 'received_by', 'id');
     }
+
+    public function approval(){
+        return $this->hasMany(Approval::class, 'assignment_id', 'id');
+    }
 }

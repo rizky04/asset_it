@@ -36,6 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/assets/last-number/{categoryId}', [AssetsController::class, 'getlastAssetsNumber'])->name('assets.last-number');
     
     Route::resource('approval', ApprovalController::class);
+    Route::post('approved', [ApprovalController::class, 'approved'])->name('approved');
     // Route::get('dashboard', function () {
     // return Inertia::render('dashboard');
     // })->name('dashboard');

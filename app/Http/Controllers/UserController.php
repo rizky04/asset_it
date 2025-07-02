@@ -38,11 +38,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|string|email|max:255|unique:users',
-            'password' => 'nullable|string|min:8|',
+            'password' => 'nullable|string|min:8',
             'position' => 'nullable|string|max:255',
             'departement' => 'nullable|string|max:255',
             'business_unit' => 'nullable|string|max:255',
@@ -50,29 +49,36 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
             'access' => 'nullable|in:admin,user',
+            'signature' => 'nullable|file|image|max:2048', // contoh validasi jika file image
         ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'position' => $request->position,
-            'departement' => $request->departement,
-            'business_unit' => $request->business_unit,
-            'work_location' => $request->work_location,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'access' => $request->access,
-        ]);
-
+    
+        // Handle password jika diisi
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']); // jika kosong, hapus agar tidak disimpan
+        }
+    
+        // Handle file signature jika ada
+        if ($request->hasFile('signature')) {
+            $image = $request->file('signature');
+            $imagePath = $image->storeAs('signature', $image->hashName());
+            $validated['signature'] = $imagePath;
+        }
+    
+        // Create user dengan data tervalidasi
+        $user = User::create($validated);
+    
+        // Flash message
         if ($user) {
             session()->flash('success', 'User created successfully.');
         } else {
             session()->flash('error', 'Failed to create user.');
         }
-
+    
         return to_route('user.index');
     }
+    
 
     /**
      * Display the specified resource.
@@ -98,35 +104,48 @@ class UserController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, User $user)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'position' => 'nullable|string|max:255',
-            'departement' => 'nullable|string|max:255',
-            'business_unit' => 'nullable|string|max:255',
-            'work_location' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:255',
-            'access' => 'nullable|in:admin,user',
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
-        if ($request->filled('password')) {
-            $request->merge(['password' => Hash::make($request->password)]);
-        } else {
-            $request->merge(['password' => $user->password]);
-        }
+{
+    $validated = $request->validate([
+        'name' => 'nullable|string|max:255',
+        'email' => 'nullable|string|email|max:255|unique:users,email,' . $user->id,
+        'position' => 'nullable|string|max:255',
+        'departement' => 'nullable|string|max:255',
+        'business_unit' => 'nullable|string|max:255',
+        'work_location' => 'nullable|string|max:255',
+        'phone' => 'nullable|string|max:255',
+        'address' => 'nullable|string|max:255',
+        'access' => 'nullable|in:admin,user',
+        'password' => 'nullable|string|min:8',
+        'signature' => 'nullable', // contoh validasi file
+    ]);
 
-        $user->update($request->all());
-
-        if ($user) {
-            session()->flash('success', 'User updated successfully.');
-        } else {
-            session()->flash('error', 'Failed to update user.');
-        }
-
-        return to_route('user.index');
+    // Jika password diisi, hash password baru
+    if ($request->filled('password')) {
+        $validated['password'] = Hash::make($request->password);
+    } else {
+        unset($validated['password']); // jangan update password jika kosong
     }
+
+    // Handle file upload signature jika ada
+    if ($request->hasFile('signature')) {
+        $image = $request->file('signature');
+        $imagePath = $image->storeAs('signature', $image->hashName());
+        $validated['signature'] = $imagePath;
+    }
+
+    // Update user
+    $update = $user->update($validated);
+
+    // Flash message
+    if ($update) {
+        session()->flash('success', 'User updated successfully.');
+    } else {
+        session()->flash('error', 'Failed to update user.');
+    }
+
+    return to_route('user.index');
+}
+
 
     /**
      * Remove the specified resource from storage.

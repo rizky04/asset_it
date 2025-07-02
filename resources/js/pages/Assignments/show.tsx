@@ -26,6 +26,7 @@ interface PrintAssignments {
 }
 
 export default function show({ assignments }: PrintAssignments) {
+ 
   const sigPad = useRef<SignatureCanvas>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -44,7 +45,7 @@ export default function show({ assignments }: PrintAssignments) {
 
     router.post(route('approval.store'), {
       signature: signature || '',
-         received_by: assignments.received_by.id,
+      user_id: assignments.received_by.id,
     assignment_id: assignments.id,
     },{
       onSuccess: () => {
@@ -225,9 +226,12 @@ export default function show({ assignments }: PrintAssignments) {
                   simpan
                 </Button>
 
-                <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
+                {/* <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
                   cancel
-                </Button>
+                </Button> */}
+                <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+            Cancel
+          </AlertDialogCancel>
               </div>
             </form>
 

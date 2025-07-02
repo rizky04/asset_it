@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 
 
 
+
 export default function create() {
   const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -39,13 +40,21 @@ export default function create() {
     address: '',
     access: '',
     password: '',
+    signature: null as File | null,
   })
   const access = [
     { values: 'admin', label: 'admin' },
     { values: 'user', label: 'user' },
   ];
 
- 
+   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+ const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+     const file = e.target.files?.[0];
+     if (file) {
+       setData('signature', file);
+       setPreview(URL.createObjectURL(file));
+     }
+   };
 
 
   const onSubmit = (e: React.FormEvent) => {
@@ -64,21 +73,12 @@ export default function create() {
       <Head title="Create Category" />
       <div className="flex justify-center items-center my-4">
         <Card className='max-w-5xl w-full'>
-          <CardHeader>
-            <p className='font-serif font-extrabold'>
-              <small>*Pilih Kategori user untuk membuat kode user</small>
-              <br />
-              <small>*Upload file gamber produck jika diperlukan</small>
-            </p>
-          </CardHeader>
-          <Separator />
+          
           <CardContent>
             <div className="py-6">
               <div className="mx-auto sm:px-6 lg:px-8">
                 <form className="space-y-6" onSubmit={onSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    
-                    
                     <div className="grid gap-2">
                       <label>
                         Name user
@@ -228,6 +228,29 @@ export default function create() {
                       </Select>
                       <InputError message={errors.access} />
                     </div>
+
+                    <div className="grid gap-2">
+                                          <label>
+                                          Signature
+                                          </label>
+                                          <Input
+                                            name="signature"
+                                            type='file'
+                                            disabled={processing}
+                                            onChange={handleImageChange}
+                                            className={cn(errors.signature ? "border-red-600 border-1" : "", "input-base-class")}
+                                          />
+                                          <InputError message={errors.signature} />
+                                        </div>
+                                        <div className="grid gap-2">
+                                          {preview && (
+                                            <img
+                                              src={preview as string}
+                                              alt="Preview"
+                                              className="w-32 h-32 object-cover rounded-md"
+                                            />
+                                          )}
+                                        </div>
 
                   </div>
                   <div className='gap-y-2'>

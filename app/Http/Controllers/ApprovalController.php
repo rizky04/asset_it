@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Approval;
 use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\UpdateApprovalRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
 class ApprovalController extends Controller
@@ -87,5 +88,14 @@ class ApprovalController extends Controller
     public function destroy(Approval $approval)
     {
         //
+    }
+
+    public function approved(StoreApprovalRequest $request){
+        $data = $request->validated();
+        $data['approval_date'] = now()->format('Y-m-d');
+        $data['user_id'] = Auth::user()->id;
+
+        Approval::create($data);
+        return redirect()->back()->with('success', 'Approval berhasil disimpan.');
     }
 }

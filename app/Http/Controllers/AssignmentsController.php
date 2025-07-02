@@ -33,6 +33,7 @@ class AssignmentsController extends Controller
         ->join('users', 'assignments.user_id', '=', 'users.id')
         ->join('users as rb', 'assignments.received_by', '=', 'rb.id')
         ->select('assignments.*', 'assets.name as asset', 'assets.assets_code as assets_code', 'users.name as user', 'rb.name as receivedBy')
+        ->orderBy('assignments.created_at', 'desc')
         ->get();
         
        
@@ -94,7 +95,7 @@ class AssignmentsController extends Controller
     //    $data =  Assignments::with(['asset', 'user', 'receivedBy'])->findOrFail($assignment->id);
     //     dd($data);
         return Inertia::render('Assignments/show', [
-            'assignments' => Assignments::with(['asset', 'user', 'receivedBy'])->findOrFail($assignment->id),
+            'assignments' => Assignments::with(['asset', 'user', 'receivedBy', 'approval.user'])->findOrFail($assignment->id),
         ]);
     }
 

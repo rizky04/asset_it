@@ -105,6 +105,20 @@ export const columns: ColumnDef<Assignments>[] = [
             })
             setIsDialogOpen(false)
         }
+
+        const approved = (e: React.FormEvent) => {
+          e.preventDefault();
+          router.post(route('approved'), {
+            assignment_id: assignments.id,
+          },{
+            onSuccess: () => {
+              toast.success('approved successfully')
+          },
+          onError: () => {
+              toast.error('Failed to approved')
+          },
+          });
+        }
         return (
           <>
           <DropdownMenu>
@@ -139,6 +153,12 @@ export const columns: ColumnDef<Assignments>[] = [
                 onClick={() => {router.visit(route('assignments.assign', assignments.id))}}
               >
               Assign to
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={approved}
+              >
+              Approved
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
