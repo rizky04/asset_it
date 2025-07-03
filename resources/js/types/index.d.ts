@@ -129,6 +129,7 @@ export interface Assignments {
     asset: string;
     assets_code: string;
     user: string;
+    approval: approval;
     receivedBy: string;
     created_at: string;
     updated_at: string;
@@ -146,7 +147,25 @@ export interface print {
     document_url?: string;
     asset: Asset;
     user: Users;
+    approval: approval;
     receivedBy: Users;
     created_at: string;
     updated_at: string;
+}
+
+export interface Approval{
+    id: number;
+    user_id: number;
+    user: Users;
+    signature: string;
+    approval_date?: string;
+} 
+
+export interface SettingApproval {
+    id: number;
+    user_id: number;
+    name: string;
+    type: number;   
+    user: Users;
+    note: string;
 }

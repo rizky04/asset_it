@@ -74,23 +74,9 @@ export function DataTable<TData, TValue>({
       pageSize: 10, // default 10 row per page
     });  
 
-    const handleExport = () => {
-      window.location.href = "/assignment/export";
-    };
+    
   
-    const handleImport = (e: FormEvent) => {
-      e.preventDefault();
-      if (fileInput.current?.files?.[0]) {
-        const formData = new FormData();
-        formData.append("file", fileInput.current.files[0]);
-        router.post("/assignment/import", formData);
-        setIsDialogOpen(false)
-      }
-    };
-  
-    const handleDownloadTemplate = () => {
-      window.location.href = "/assignment/template";
-    };
+   
 
 
   const table = useReactTable({
@@ -127,14 +113,9 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
         <div className="flex flex-wrap gap-2 items-center">
-        <Button onClick={handleExport}>
-            Export
-          </Button> 
-          <Button onClick={() => {setTimeout(() => {setIsDialogOpen(true)}, 100)}}>
-          Import
-          </Button>
+        
         <Button>
-              <Link href={route("assignments.create")}>New Assignments</Link>
+              <Link href={route("settingApproval.create")}>New Assignments</Link>
             </Button>
           <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -246,29 +227,6 @@ export function DataTable<TData, TValue>({
       </div>
       </div>
 
-      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          {/* <AlertDialogTrigger>Open</AlertDialogTrigger> */}
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Unduh template terlebih dahulu</AlertDialogTitle>
-              <AlertDialogDescription>
-              <form onSubmit={handleImport} encType="multipart/form-data" className="flex items-center gap-2">
-               <Input type="file" name="file" ref={fileInput} accept=".xlsx,.xls" />
-               <Button type="submit">
-              Import
-            </Button>
-            </form>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>Cancel</AlertDialogCancel>
-             
-              <AlertDialogAction onClick={handleDownloadTemplate}>Unduh Template</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-          
-        </AlertDialog>
     </>
   )
 }

@@ -43,8 +43,10 @@ export default function create() {
     signature: null as File | null,
   })
   const access = [
+    { values: 'administrator', label: 'administrator' },
     { values: 'admin', label: 'admin' },
     { values: 'user', label: 'user' },
+    { values: 'hr', label: 'hr' },
   ];
 
    const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);

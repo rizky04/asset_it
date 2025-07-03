@@ -7,6 +7,8 @@ use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\UpdateApprovalRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+
 
 class ApprovalController extends Controller
 {
@@ -42,12 +44,15 @@ class ApprovalController extends Controller
             $image = str_replace(' ', '+', $image);
             $imageName = 'signatures/'.time().'.png';
 
-            // Pastikan folder signatures ada
-            if (!File::exists(public_path('signatures'))) {
-                File::makeDirectory(public_path('signatures'), 0755, true);
-            }
 
-            File::put(public_path($imageName), base64_decode($image));
+            Storage::disk('public')->put($imageName, base64_decode($image));
+
+            // Pastikan folder signatures ada
+            // if (!File::exists(public_path('signatures'))) {
+            //     File::makeDirectory(public_path('signatures'), 0755, true);
+            // }
+
+            // File::put(public_path($imageName), base64_decode($image));
 
             // Simpan nama file ke database
             $data['signature'] = $imageName;

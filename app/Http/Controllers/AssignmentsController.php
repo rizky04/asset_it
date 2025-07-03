@@ -15,10 +15,13 @@ use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
+use App\Models\Approval;
+
 use App\Imports\AssetsImport;
 use App\Exports\AssetsTemplateExport;
 use App\Exports\AssignmentsExport;
 use App\Imports\AssignmentsImport;
+use App\Models\SettingApproval;
 use Illuminate\Support\Facades\DB;
 
 class AssignmentsController extends Controller
@@ -35,10 +38,12 @@ class AssignmentsController extends Controller
         ->select('assignments.*', 'assets.name as asset', 'assets.assets_code as assets_code', 'users.name as user', 'rb.name as receivedBy')
         ->orderBy('assignments.created_at', 'desc')
         ->get();
-        
+
+       
        
         return Inertia::render('Assignments/index', [
             'assignments' => $data,
+            
         ]);
         // 'assignments' => Assignments::with(['asset', 'user', 'receivedBy'])->get(),
     }
@@ -85,17 +90,14 @@ class AssignmentsController extends Controller
      */
     public function show(Assignments $assignment)
     {
-    //      $data = DB::table('assignments')
-    //     ->join('assets', 'assignments.asset_id', '=', 'assets.id')
-    //     ->join('users', 'assignments.user_id', '=', 'users.id')
-    //     ->join('users as rb', 'assignments.received_by', '=', 'rb.id')
-    //     ->select('assignments.*', 'assets.name as asset', 'assets.assets_code as assets_code', 'users.name as user', 'rb.name as receivedBy')
-    //     ->where('assignments.id', $assignment->id)
-    //     ->get();
-    //    $data =  Assignments::with(['asset', 'user', 'receivedBy'])->findOrFail($assignment->id);
-    //     dd($data);
-        return Inertia::render('Assignments/show', [
-            'assignments' => Assignments::with(['asset', 'user', 'receivedBy', 'approval.user'])->findOrFail($assignment->id),
+    
+    $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
+    $approvals = Approval::with('user')->where('assignment_id', $assignment->id)->get();
+
+    return Inertia::render('Assignments/show', [
+        'assignments' => Assignments::with(['asset', 'user', 'receivedBy', 'approval.user'])->findOrFail($assignment->id),
+        'settingApproval' => $settingApproval,
+        'approvals' => $approvals,
         ]);
     }
 

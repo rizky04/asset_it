@@ -1,4 +1,4 @@
-import { print } from "@/types";
+import { Approval, Assignments, print, SettingApproval } from "@/types";
 import { useRef } from "react";
 import SignatureCanvas from 'react-signature-canvas'
 import { Head, router, useForm } from '@inertiajs/react';
@@ -22,11 +22,13 @@ import { Input } from "@/components/ui/input";
 import InputError from "@/components/input-error";
 
 interface PrintAssignments {
-  assignments: print
+  assignments: print,
+  settingApproval: SettingApproval[],
+  approvals: Approval[],
 }
 
-export default function show({ assignments }: PrintAssignments) {
- 
+export default function show({ assignments, settingApproval, approvals }: PrintAssignments) {
+  console.log(settingApproval);
   const sigPad = useRef<SignatureCanvas>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -46,8 +48,8 @@ export default function show({ assignments }: PrintAssignments) {
     router.post(route('approval.store'), {
       signature: signature || '',
       user_id: assignments.received_by.id,
-    assignment_id: assignments.id,
-    },{
+      assignment_id: assignments.id,
+    }, {
       onSuccess: () => {
         toast.success('approval created successfully');
         setIsDialogOpen(false);
@@ -63,7 +65,9 @@ export default function show({ assignments }: PrintAssignments) {
     // setData('signature', '');
   };
 
-  console.log(assignments);
+  console.log("assignments",assignments);
+  console.log(settingApproval);
+  console.log("approvals", approvals);
   return (
     <>
       <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl space-y-6 text-sm">
@@ -159,91 +163,169 @@ export default function show({ assignments }: PrintAssignments) {
         </p>
         {/* Tanda Tangan */}
         <div className="grid grid-cols-4 gap-8 text-center mt-10">
-          <div>
-            <p>Surabaya, {assignments.assignment_date}</p>
-            <p className="font-semibold">Mengetahui,</p>
-            <div className="h-24"></div>
-            <p>{assignments.user.name}</p>
-          </div>
-          <div>
-            <p>&nbsp;</p>
-            <p className="font-semibold">Mengetahui,</p>
-            <div className="h-24"></div>
-            <p>{assignments.user.name}</p>
-          </div>
-          <div>
-            <p>&nbsp;</p>
-            <p className="font-semibold">Menyetujui,</p>
-            <div className="h-24"></div>
-            <p>{assignments.received_by.name}</p>
-          </div>
-          <div>
-            <p>&nbsp;</p>
-            <p className="font-semibold">Menyetujui,</p>
-            <div className="h-24">
 
-              <Button onClick={() => { setIsDialogOpen(true) }}>Approval</Button>
 
-            </div>
-            <p>{assignments.received_by.name}</p>
 
-          </div>
+          {settingApproval
+            .filter((setting) => setting.user_id === assignments.user_id) // filter setting berdasarkan assignment_id
+            .map((setting) => {
+              // cari approval untuk user_id approver ini
+              const approval = approvals?.find(
+                (a) => a.user_id === setting.user_id
+              );
+
+              console.log("test", approval);
+
+              return (
+                <div key={setting.id} className="border p-3 rounded mb-2">
+                  {/* <p><strong>Approver:</strong> {setting.user?.name}
+                 ({setting.user?.position})
+                 </p> */}
+                  <p>&nbsp;</p>
+                  <p className="font-semibold">{setting.note}, </p>
+                  {/* <p><strong>Role:</strong> {setting.name}</p> */}
+
+                  {approval ? (
+                    <>
+                      {/* <p className="text-green-600 font-semibold">✅ Approved</p> */}
+                      {/* <p><strong>Approval Data:</strong> {approval.approval_date}</p> */}
+                      {/* <p><strong>Signature:</strong> {setting.user.signature}</p> */}
+                      <div className="h-24">
+                        <img
+                          src={`/storage/${setting.user.signature}`}
+                          alt="Signature"
+                          className="w-40 h-auto mt-2"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-red-600">Belum di-approve</p>
+                  )}
+                  <p>{setting.user.name}</p>
+                  <p>{setting.name}</p>
+                </div>
+              );
+            })}
+
+          {settingApproval
+            .filter((setting) => setting.type != 1) // filter setting berdasarkan assignment_id
+            .map((setting) => {
+              // cari approval untuk user_id approver ini
+              const approval = approvals?.find(
+                (a) => a.user_id === setting.user_id
+              );
+
+              console.log("test", approval);
+
+              return (
+                <div key={setting.id} className="border p-3 rounded mb-2">
+                  {/* <p><strong>Approver:</strong> {setting.user?.name}
+                 ({setting.user?.position})
+                 </p> */}
+                  <p>&nbsp;</p>
+                  <p className="font-semibold">{setting.note}, </p>
+                  {/* <p><strong>Role:</strong> {setting.name}</p> */}
+
+                  {approval ? (
+                    <>
+                      {/* <p className="text-green-600 font-semibold">✅ Approved</p> */}
+                      {/* <p><strong>Approval Data:</strong> {approval.approval_date}</p> */}
+                      {/* <p><strong>Signature:</strong> {setting.user.signature}</p> */}
+                      <div className="h-24">
+                        <img
+                          src={`/storage/${setting.user.signature}`}
+                          alt="Signature"
+                          className="w-40 h-auto mt-2"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-red-600">Belum di-approve</p>
+                  )}
+                  <p>{setting.user.name}</p>
+                  <p>{setting.name}</p>
+                </div>
+              );
+            })}
+
+<div className="border p-3 rounded mb-2">
+<p>&nbsp;</p>
+<p className="font-semibold">Menyetujui,</p>
+{approvals.some((approval) => approval.user_id === assignments.received_by.id) ? (
+  approvals
+    .filter((approval) => approval.user_id === assignments.received_by.id)
+    .map((approval) => (
+      <div key={approval.id} className="h-24">
+        <img
+                          src={`/storage/${approval.signature}`}
+                          alt="Signature"
+                          className="w-40 h-auto mt-2"
+                        />
+      </div>
+    ))
+) : (
+   <Button onClick={() => { setIsDialogOpen(true) }}>Approval</Button>
+)}
+  <p>{assignments.received_by.name}</p>
+ <p>Penerima</p>
+</div>
+          
         </div>
       </div>
 
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Assignment Tanda Tangan</AlertDialogTitle>
-          <AlertDialogDescription>
-           
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <form
-              onSubmit={handleSubmit}
-              encType="multipart/form-data"
-              className="flex flex-col items-center gap-4"
-            >
-              <SignatureCanvas
-                penColor="black"
-                ref={sigPad}
-                canvasProps={{
-                  width: 400,
-                  height: 200,
-                  className: 'border border-gray-300 rounded-md',
-                }}
-              />
-              {/* <InputError message={errors.signature} /> */}
-             
-              
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Assignment Tanda Tangan</AlertDialogTitle>
+            <AlertDialogDescription>
 
-              <div className="flex gap-3">
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <form
+            onSubmit={handleSubmit}
+            encType="multipart/form-data"
+            className="flex flex-col items-center gap-4"
+          >
+            <SignatureCanvas
+              penColor="black"
+              ref={sigPad}
+              canvasProps={{
+                width: 400,
+                height: 200,
+                className: 'border border-gray-300 rounded-md',
+              }}
+            />
+            {/* <InputError message={errors.signature} /> */}
 
-                <Button variant="destructive" onClick={clearSignature}>Clear</Button>
 
-                <Button type="submit" >
-                  {/* {processing ? 'Menyimpan...' : 'Submit Approval'} */}
-                  simpan
-                </Button>
 
-                {/* <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
+            <div className="flex gap-3">
+
+              <Button variant="destructive" onClick={clearSignature}>Clear</Button>
+
+              <Button type="submit" >
+                {/* {processing ? 'Menyimpan...' : 'Submit Approval'} */}
+                simpan
+              </Button>
+
+              {/* <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
                   cancel
                 </Button> */}
-                <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
-            Cancel
-          </AlertDialogCancel>
-              </div>
-            </form>
+              <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </AlertDialogCancel>
+            </div>
+          </form>
 
-        <AlertDialogFooter>
-          {/* <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+          <AlertDialogFooter>
+            {/* <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
             Cancel
           </AlertDialogCancel> */}
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
-     
+
     </>
   );
 }

@@ -48,7 +48,7 @@ class UserController extends Controller
             'work_location' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
-            'access' => 'nullable|in:admin,user',
+            'access' => 'nullable|in:administrator,admin,user,hr,',
             'signature' => 'nullable|file|image|max:2048', // contoh validasi jika file image
         ]);
     
@@ -114,7 +114,7 @@ class UserController extends Controller
         'work_location' => 'nullable|string|max:255',
         'phone' => 'nullable|string|max:255',
         'address' => 'nullable|string|max:255',
-        'access' => 'nullable|in:admin,user',
+       'access' => 'nullable|in:administrator,admin,user,hr,',
         'password' => 'nullable|string|min:8',
         'signature' => 'nullable', // contoh validasi file
     ]);

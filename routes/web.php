@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SettingApprovalController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -37,6 +38,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::resource('approval', ApprovalController::class);
     Route::post('approved', [ApprovalController::class, 'approved'])->name('approved');
+
+    Route::resource('settingApproval', SettingApprovalController::class);
     // Route::get('dashboard', function () {
     // return Inertia::render('dashboard');
     // })->name('dashboard');
