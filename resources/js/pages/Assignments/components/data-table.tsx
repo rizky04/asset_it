@@ -51,15 +51,20 @@ import { Link } from "@inertiajs/react"
 import { router } from '@inertiajs/react'
 
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { Approval, SettingApproval } from "@/types";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  approvals: Approval[];
+  settingApproval : SettingApproval[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  approvals,
+  settingApproval,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
@@ -95,7 +100,11 @@ export function DataTable<TData, TValue>({
 
   const table = useReactTable({
     data,
-    columns,
+    columns, 
+    meta: {
+      approvals,
+      settingApproval,
+    },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

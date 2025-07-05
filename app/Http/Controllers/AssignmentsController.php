@@ -39,10 +39,14 @@ class AssignmentsController extends Controller
         ->orderBy('assignments.created_at', 'desc')
         ->get();
 
+        $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
+        $approvals = Approval::with('user')->get();
        
        
         return Inertia::render('Assignments/index', [
             'assignments' => $data,
+            'settingApproval' => $settingApproval,
+            'approvals' => $approvals,
             
         ]);
         // 'assignments' => Assignments::with(['asset', 'user', 'receivedBy'])->get(),

@@ -28,7 +28,7 @@ import {
 import { useState } from "react"
 import { router } from "@inertiajs/react"
 import { toast } from "sonner"
-import { Assignments } from "@/types"
+import { Approval, Assignments, SettingApproval } from "@/types"
 
 export const columns: ColumnDef<Assignments>[] = [
   {
@@ -37,31 +37,31 @@ export const columns: ColumnDef<Assignments>[] = [
   },
   {
     accessorKey: "user",
-    header: "user",
+    header: "User",
   }, 
   {
     accessorKey: "asset",
-    header: "asset",
+    header: "Assets",
   },
   {
     accessorKey: "assets_code",
-    header: "assets_code",
+    header: "Assets Code",
   },
   {
     accessorKey: "assignment_date",
-    header: "assignment_date",
+    header: "Assignment Date",
   },
   {
     accessorKey: "return_date",
-    header: "return_date",
+    header: "Return Date",
   },
   {
     accessorKey: "condition_note",
-    header: "condition_note",
+    header: "Kondisi",
   },
   {
     accessorKey: "receivedBy",
-    header: "receivedBy",
+    header: "Penerima",
   },
   {
     accessorKey: "status",
@@ -84,8 +84,141 @@ export const columns: ColumnDef<Assignments>[] = [
     }
   },
   {
-    accessorKey: "document_url",
-    header: "document_url",
+    id: "approval_status",
+    header: "Approval Status",
+    // cell: ({ row, table }) => {
+    //   const assignments = row.original;
+    //   const approvals = table.options.meta?.approvals as Approval[];
+    //   const settingApprovals = table.options.meta?.settingApproval as SettingApproval[];
+
+    //   const assignmentApprovals = approvals.filter(
+    //     (a) => a.assignment_id === assignments.id
+    //   );
+
+    //   const notApproved = settingApprovals.filter(
+    //     (setting) =>
+    //       !assignmentApprovals.some(
+    //         (approval) => approval.user_id === setting.user_id
+    //       )
+    //   );
+
+    //   return (
+    //     <div>
+    //       {notApproved.length > 0 ? (
+    //         notApproved.map((setting) => (
+    //           <p key={setting.id} className="text-red-600">
+    //             ❌ {setting.name}
+    //           </p>
+    //         ))
+    //       ) : (
+    //         <p className="text-green-600">✅ All Approved</p>
+    //       )}
+    //     </div>
+    //   );
+    // },
+    cell: ({ row, table }) => {
+      const assignments = row.original;
+      const approvals = table.options.meta?.approvals as Approval[];
+      const settingApprovals = table.options.meta?.settingApproval as SettingApproval[];
+    
+      // Ambil approvals khusus untuk assignment ini
+      const assignmentApprovals = approvals.filter(
+        (a) => a.assignment_id === assignments.id
+      );
+    
+      return (
+        <div className="space-y-1">
+          {settingApprovals
+          .filter((setting) => setting.user_id === assignments.user_id)
+          .map((setting) => {
+            // Cari apakah setting approval ini sudah di-approve
+            const approved = assignmentApprovals.find(
+              (approval) => approval.user_id === setting.user_id
+            );
+    
+            if (approved) {
+              // ✅ Jika sudah approve, tampil centang hijau + nama user
+              return (
+                <p key={setting.id} className="text-green-600">
+                  ✅ {setting.name} by {approved.user?.name || 'Unknown'}
+                </p>
+              );
+            } else {
+              // ❌ Jika belum approve
+              return (
+                <p key={setting.id} className="text-red-600">
+                  ❌ {setting.name}
+                </p>
+              );
+            }
+          })}
+
+{settingApprovals
+          .filter((setting) => setting.type != 1)
+          .map((setting) => {
+            // Cari apakah setting approval ini sudah di-approve
+            const approved = assignmentApprovals.find(
+              (approval) => approval.user_id === setting.user_id
+            );
+    
+            if (approved) {
+              // ✅ Jika sudah approve, tampil centang hijau + nama user
+              return (
+                <p key={setting.id} className="text-green-600">
+                  ✅ {setting.name} by {approved.user?.name || 'Unknown'}
+                </p>
+              );
+            } else {
+              // ❌ Jika belum approve
+              return (
+                <p key={setting.id} className="text-red-600">
+                  ❌ {setting.name}
+                </p>
+              );
+            }
+          })}
+
+{/* {approvals
+  .filter((approval) => approval.assignment_id === assignments.id)
+  .map((approval) => {
+    // Jika approval user_id sama dengan assignment.received_by
+    if (approval.user_id === assignments.received_by) {
+      return (
+        <p key={approval.id} className="text-green-600">
+          ✅ Penerima {assignments.receivedBy || 'Unknown'}
+        </p>
+      );
+    } else {
+      return (
+        <div key={approval.id} className="text-red-600">
+          ❌ Penerima {assignments.receivedBy || 'Unknown'}
+        </div>
+      );
+    }
+  })} */
+  
+  }
+
+{(() => {
+  const hasApproved = approvals.some(
+    (approval) =>
+      approval.assignment_id === assignments.id &&
+      approval.user_id === assignments.received_by // sesuaikan jika received_by adalah object
+  );
+
+  return (
+    <p className={hasApproved ? "text-green-600" : "text-red-600"}>
+      {hasApproved ? "✅ Penerima " : "❌ Penerima "}
+      {assignments.receivedBy || "Unknown"}
+    </p>
+  );
+})()}
+
+  
+
+        </div>
+      ); 
+    },
   },
   {
     accessorKey: "actions",
@@ -149,13 +282,14 @@ export const columns: ColumnDef<Assignments>[] = [
                Return
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
+              <DropdownMenuItem 
                 onClick={() => {router.visit(route('assignments.assign', assignments.id))}}
               >
               Assign to
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
+              <DropdownMenuItem 
+              className="text-green-600 hover:bg-red-50 focus:bg-green-50 dark:hover:bg-green-900 dark:focus:bg-green-900"
                 onClick={approved}
               >
               Approved

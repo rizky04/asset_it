@@ -156,6 +156,7 @@ export interface print {
 export interface Approval{
     id: number;
     user_id: number;
+    assignment_id: number;
     user: Users;
     signature: string;
     approval_date?: string;
