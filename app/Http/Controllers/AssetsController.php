@@ -13,7 +13,11 @@ use App\Exports\AssetsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\AssetsImport;
 use App\Exports\AssetsTemplateExport;
+use App\Models\Approval;
+use App\Models\Assignments;
+use App\Models\SettingApproval;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AssetsController extends Controller
 {
@@ -151,5 +155,25 @@ public function downloadTemplate()
     $date = now()->format('Y-m-d_H-i-s');
     $filename = 'template_import_assets_' . $date . '.xlsx';
     return Excel::download(new AssetsTemplateExport, $filename);
+}
+
+public function history($id){
+    $data = DB::table('assignments')
+        ->join('assets', 'assignments.asset_id', '=', 'assets.id')
+        ->join('users', 'assignments.user_id', '=', 'users.id')
+        ->join('users as rb', 'assignments.received_by', '=', 'rb.id')
+        ->select('assignments.*', 'assets.name as asset', 'assets.assets_code as assets_code', 'users.name as user', 'rb.name as receivedBy')
+        ->orderBy('assignments.created_at', 'desc')
+        ->where('assignments.asset_id', $id)
+        ->get();
+
+        $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
+        $approvals = Approval::with('user')->get();
+    
+    return Inertia::render('Asset/history', [
+        'assignments' => $data,
+        'settingApproval' => $settingApproval,
+        'approvals' => $approvals,
+    ]);
 }
 }

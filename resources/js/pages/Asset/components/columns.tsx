@@ -188,6 +188,11 @@ export const columns: ColumnDef<Asset>[] = [
               >
                Detail
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {router.visit(route('asset.history', asset.id))}}
+              >
+               History
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {setTimeout(() => {setIsDialogOpen(true)}, 100)}}>Delete</DropdownMenuItem>
             </DropdownMenuContent>

@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('returned/{id}', [AssignmentsController::class, 'returned'])->name('assignments.returned');
     
     Route::resource('asset', AssetsController::class);
+    Route::get('history/{id}', [AssetsController::class, 'history'])->name('asset.history');
     Route::get('/assets/export', [AssetsController::class, 'export']);
     Route::post('/assets/import', [AssetsController::class, 'import']);
     Route::get('/assets/template', [AssetsController::class, 'downloadTemplate']);
