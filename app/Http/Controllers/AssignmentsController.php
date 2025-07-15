@@ -41,12 +41,14 @@ class AssignmentsController extends Controller
 
         $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
         $approvals = Approval::with('user')->get();
+        $users = User::all();
        
        
         return Inertia::render('Assignments/index', [
             'assignments' => $data,
             'settingApproval' => $settingApproval,
             'approvals' => $approvals,
+            'users' => $users,
             
         ]);
         // 'assignments' => Assignments::with(['asset', 'user', 'receivedBy'])->get(),
@@ -60,7 +62,7 @@ class AssignmentsController extends Controller
        
         return Inertia::render('Assignments/create', [
             'assets' => Assets::where('status', 'available')->get(),
-            'users' => User::all(),
+            'users' => User::orderBy('name', 'asc')->get(),
         ]);
     }
 
@@ -69,6 +71,8 @@ class AssignmentsController extends Controller
      */
     public function store(StoreAssignmentsRequest $request)
     {
+
+        // dd($request->all());
         $data = $request->validated();
 
         $asset = Assets::findOrFail($data['asset_id']);

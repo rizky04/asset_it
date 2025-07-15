@@ -31,14 +31,6 @@ export default function show({ assignments, settingApproval, approvals }: PrintA
   console.log(settingApproval);
   const sigPad = useRef<SignatureCanvas>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  // const { data, setData, post, processing, errors } = useForm({
-  //   received_by: assignments.received_by.id,
-  //   assignment_id: assignments.id,
-  //   signature: '',
-  // });
-  // console.log(data);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -65,14 +57,12 @@ export default function show({ assignments, settingApproval, approvals }: PrintA
     // setData('signature', '');
   };
 
-  console.log("assignments",assignments);
-  console.log(settingApproval);
-  console.log("approvals", approvals);
+ 
   return (
     <>
       <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl space-y-6 text-sm">
         <h1 className="text-2xl font-bold text-center">
-          SERAH TERIMA FASILITAS PERUSAHAAN
+         <u>SERAH TERIMA FASILITAS PERUSAHAAN</u>
         </h1>
 
         <p>Yang bertandatangan di bawah ini:</p>
@@ -146,7 +136,7 @@ export default function show({ assignments, settingApproval, approvals }: PrintA
         </div>
 
         <p>
-          Fasilitas tersebut diserahkan oleh Pihak Pertama kepada Pihak Kedua berkaitan dengan jabatannya sebagai <b>Marcomm & PR Intern </b>
+          Fasilitas tersebut diserahkan oleh Pihak Pertama kepada Pihak Kedua berkaitan dengan jabatannya sebagai <b>{assignments.received_by.position} </b>
           dengan dilakukannya serah terima ini maka berlaku beberapa hal yang harus diperhatikan, antara lain:
         </p>
 

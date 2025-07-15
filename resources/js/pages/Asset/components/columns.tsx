@@ -194,6 +194,12 @@ export const columns: ColumnDef<Asset>[] = [
                History
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {router.visit(route('asset.duplicate', asset.id))}}
+              >
+               Copy Data
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {setTimeout(() => {setIsDialogOpen(true)}, 100)}}>Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

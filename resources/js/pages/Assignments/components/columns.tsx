@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
+import dayjs from 'dayjs'
  
 import { Button } from "@/components/ui/button"
 import {
@@ -28,7 +29,16 @@ import {
 import { useState } from "react"
 import { router } from "@inertiajs/react"
 import { toast } from "sonner"
-import { Approval, Assignments, SettingApproval } from "@/types"
+import { Approval, Assignments, SettingApproval, Users } from "@/types"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import InputError from "@/components/input-error"
+import { Input } from "@/components/ui/input"
 
 export const columns: ColumnDef<Assignments>[] = [
   {
@@ -120,6 +130,7 @@ export const columns: ColumnDef<Assignments>[] = [
       const assignments = row.original;
       const approvals = table.options.meta?.approvals as Approval[];
       const settingApprovals = table.options.meta?.settingApproval as SettingApproval[];
+     
     
       // Ambil approvals khusus untuk assignment ini
       const assignmentApprovals = approvals.filter(
@@ -223,10 +234,15 @@ export const columns: ColumnDef<Assignments>[] = [
   {
     accessorKey: "actions",
     header: "Actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
         const assignments = row.original
         const [isDialogOpen, setIsDialogOpen] = useState(false)
-        console.log(assignments.id)
+        const [openModal, setOpenModal] = useState(false)
+        const [userID, setUserID] = useState<number>(0);
+        const [date, setDate] = useState<string>();
+        const users = table.options.meta?.users as Users[];
+
+       
         const onDelete = () => {
             router.delete(route('assignments.destroy', assignments.id), {
                 onSuccess: () => {
@@ -249,6 +265,25 @@ export const columns: ColumnDef<Assignments>[] = [
           },
           onError: () => {
               toast.error('Failed to approved')
+          },
+          });
+        }
+
+        const assignTo = (e: React.FormEvent) => {
+          e.preventDefault();
+         
+          router.post(route('assignments.store'), {
+            asset_id: assignments.asset_id,
+            received_by: userID,
+            assignment_date: date,
+            condition_note : assignments.condition_note,
+          },{
+            onSuccess: () => {
+              toast.success('assigned successfully')
+              setOpenModal(false);
+          },
+          onError: () => {
+              toast.error('Failed to assigned')
           },
           });
         }
@@ -276,6 +311,8 @@ export const columns: ColumnDef<Assignments>[] = [
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {setTimeout(() => {setIsDialogOpen(true)}, 100)}}>Delete</DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => {setTimeout(() => {setOpenModal(true)}, 100)}}>Asign to</DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {router.visit(route('assignments.returned', assignments.id))}}
               >
@@ -285,7 +322,7 @@ export const columns: ColumnDef<Assignments>[] = [
               <DropdownMenuItem 
                 onClick={() => {router.visit(route('assignments.assign', assignments.id))}}
               >
-              Assign to
+             Re_assign
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem 
@@ -314,6 +351,61 @@ export const columns: ColumnDef<Assignments>[] = [
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+<AlertDialog open={openModal} onOpenChange={setOpenModal}>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Assign to user</AlertDialogTitle>
+      <AlertDialogDescription>
+        <form onSubmit={assignTo}>
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+            <label className="text-sm font-medium text-gray-700 mb-1">Pilih User</label>
+            <Select onValueChange={(value) => setUserID(parseInt(value))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih User" />
+              </SelectTrigger>
+              <SelectContent>
+                {users.map((item) => (
+                  <SelectItem key={item.id} value={item.id.toString()}>
+                    {item.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            </div>
+            <div>
+            <label className="text-sm font-medium text-gray-700 mb-1">Date</label>
+            <Input
+              type="date"
+              name="condition_note"
+              // defaultValue={assignments.condition_note}
+              onChange={(e) => setDate(e.target.value)}
+              placeholder="Enter condition note"
+            />
+            </div>
+          </div>
+
+          
+           <div className="gap-2 flex items-center justify-end mt-4">
+           <Button type="submit" size="sm" className="mt-5">
+            Sign to
+          </Button>
+          <Button type="button" size="sm" className="mt-5" onClick={() => setOpenModal(false)}>Cancel</Button>
+            </div>     
+         
+          {/* <AlertDialogCancel onClick={() => setOpenModal(false)}>Cancel</AlertDialogCancel> */}
+        </form>
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      {/* <AlertDialogCancel onClick={() => setOpenModal(false)}>Cancel</AlertDialogCancel> */}
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+
+
+       
         </>
         )
       },

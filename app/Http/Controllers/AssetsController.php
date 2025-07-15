@@ -27,7 +27,7 @@ class AssetsController extends Controller
     public function index()
     {
         return Inertia::render('Asset/index',[
-            'asset' => Assets::with(['category', 'user'])->get(),
+            'asset' => Assets::with(['category', 'user'])->orderBy('created_at', 'desc')->get(),
         ]);
     }
 
@@ -176,4 +176,41 @@ public function history($id){
         'approvals' => $approvals,
     ]);
 }
+
+public function duplicate($id)
+{
+    $asset = Assets::findOrFail($id);
+
+    // Ambil category data
+    $category = Category::find($asset->category_id);
+
+    // Generate kode asset baru
+    // $today = date('dmy');
+
+    $today = date('d') . date('n') . date('Y'); // 1172025
+
+    // Ambil asset terakhir pada category dan tanggal hari ini
+    $lastAsset = Assets::where('category_id', $asset->category_id)
+        ->where('assets_code', 'like', '%'.$today.'%')
+        ->orderBy('created_at', 'desc')
+        ->first();
+
+    $lastNumber = 0;
+    if ($lastAsset && preg_match('/\d+$/', $lastAsset->assets_code, $matches)) {
+        $lastNumber = (int) $matches[0];
+    }
+
+    $prefix = strtoupper(substr($category->name, 0, 3));
+    $newCode = $prefix . '-' . $today . '-' . str_pad($lastNumber + 1, 2, '0', STR_PAD_LEFT);
+
+    // Duplicate asset dan set kode baru
+    $newAsset = $asset->replicate(); // duplikat semua field kecuali id
+    $newAsset->assets_code = $newCode;
+    $newAsset->name = $asset->name . ' Copy';
+    $newAsset->save();
+
+    return to_route('asset.index');
+}
+
+
 }

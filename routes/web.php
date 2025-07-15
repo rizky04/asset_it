@@ -11,8 +11,13 @@ use App\Http\Controllers\SettingApprovalController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return Inertia::render('auth/login');
 })->name('home');
+
+// Route::get('/', function () {
+//     return Inertia::render('welcome');
+// })->name('home');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('user', UserController::class);
@@ -31,6 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('returned/{id}', [AssignmentsController::class, 'returned'])->name('assignments.returned');
     
     Route::resource('asset', AssetsController::class);
+    Route::get('duplicate/{id}', [AssetsController::class, 'duplicate'])->name('asset.duplicate');
     Route::get('history/{id}', [AssetsController::class, 'history'])->name('asset.history');
     Route::get('/assets/export', [AssetsController::class, 'export']);
     Route::post('/assets/import', [AssetsController::class, 'import']);
