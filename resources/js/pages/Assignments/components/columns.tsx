@@ -325,9 +325,7 @@ export const columns: ColumnDef<Assignments>[] = [
              Re_assign
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
-              className="text-green-600 hover:bg-red-50 focus:bg-green-50 dark:hover:bg-green-900 dark:focus:bg-green-900"
-                onClick={approved}
+              <DropdownMenuItem onClick={approved}
               >
               Approved
               </DropdownMenuItem>

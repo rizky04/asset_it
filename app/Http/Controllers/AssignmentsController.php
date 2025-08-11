@@ -72,7 +72,6 @@ class AssignmentsController extends Controller
     public function store(StoreAssignmentsRequest $request)
     {
 
-        // dd($request->all());
         $data = $request->validated();
 
         $asset = Assets::findOrFail($data['asset_id']);
