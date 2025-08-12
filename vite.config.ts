@@ -21,5 +21,9 @@ export default defineConfig({
         alias: {
             'ziggy-js': resolve(__dirname, 'vendor/tightenco/ziggy'),
         },
-    },
+    },server: {
+        host: '0.0.0.0',
+        port: 5173,
+        hmr: { host: '192.168.101.242' } // ganti IP LAN kamu
+    }
 });
