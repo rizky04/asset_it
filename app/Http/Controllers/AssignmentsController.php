@@ -42,14 +42,14 @@ class AssignmentsController extends Controller
         $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
         $approvals = Approval::with('user')->get();
         $users = User::all();
-       
-       
+
+
         return Inertia::render('Assignments/index', [
             'assignments' => $data,
             'settingApproval' => $settingApproval,
             'approvals' => $approvals,
             'users' => $users,
-            
+
         ]);
         // 'assignments' => Assignments::with(['asset', 'user', 'receivedBy'])->get(),
     }
@@ -59,7 +59,7 @@ class AssignmentsController extends Controller
      */
     public function create()
     {
-       
+
         return Inertia::render('Assignments/create', [
             'assets' => Assets::where('status', 'available')->get(),
             'users' => User::orderBy('name', 'asc')->get(),
@@ -81,7 +81,7 @@ class AssignmentsController extends Controller
         }
         $data['user_id'] = Auth::user()->id; // Assuming you want to store the authenticated user ID
         $data['status'] = "assigned"; // Assuming you want to store the authenticated user ID
-        
+
         if($request->hasFile('document_url')){
             $image = $request->file('document_url');
             $imagePath = $image->storeAs('assets', $image->hashName());
@@ -97,7 +97,7 @@ class AssignmentsController extends Controller
      */
     public function show(Assignments $assignment)
     {
-    
+
     $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
     $approvals = Approval::with('user')->where('assignment_id', $assignment->id)->get();
 
@@ -106,6 +106,18 @@ class AssignmentsController extends Controller
         'settingApproval' => $settingApproval,
         'approvals' => $approvals,
         ]);
+    }
+
+    public function approval(Request $request){
+        // dd($request->id);
+        $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
+        $approvals = Approval::with('user')->where('assignment_id', $request->id)->get();
+
+        return Inertia::render('Assignments/approval', [
+            'assignments' => Assignments::with(['asset', 'user', 'receivedBy', 'approval.user'])->findOrFail($request->id),
+            'settingApproval' => $settingApproval,
+            'approvals' => $approvals,
+            ]);
     }
 
     /**
@@ -140,7 +152,7 @@ class AssignmentsController extends Controller
         }
         $data['user_id'] = Auth::user()->id; // Assuming you want to store the authenticated user ID
         // $data['status'] = "assigned"; // Assuming you want to store the authenticated user ID
-        
+
         if($request->hasFile('document_url')){
             $image = $request->file('document_url');
             $imagePath = $image->storeAs('assets', $image->hashName());
@@ -158,7 +170,7 @@ class AssignmentsController extends Controller
      */
     public function destroy(Assignments $assignment)
     {
-      
+
         $assignment->delete();
         if($assignment->image){
             Storage::delete('assets/' . basename($assignment->image)); // Delete image file if exists
@@ -173,7 +185,7 @@ class AssignmentsController extends Controller
         if($asset){
             $asset->status = 'available'; // Update asset status to available
             $asset->save();
-        } 
+        }
 
         $assignment->status = 'returned';
         $assignment->return_date = now();
@@ -188,7 +200,7 @@ class AssignmentsController extends Controller
         if($asset){
             $asset->status = 'assigned'; // Update asset status to assigned
             $asset->save();
-        } 
+        }
 
         $assignment->status = 'assigned';
         $assignment->return_date = null;
