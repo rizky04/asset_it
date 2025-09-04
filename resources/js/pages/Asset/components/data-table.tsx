@@ -319,7 +319,7 @@ export function DataTable<TData, TValue>({
       const url = `${window.location.origin}/qrcode/${id}`;
       return (
         <div key={id} className="qr-card">
-          <QRCodeCanvas value={url} size={200} includeMargin />
+          <QRCodeCanvas value={url} size={150} includeMargin />
           <div className="qr-title">{label}</div>
           {/* <div className="qr-sub">{url}</div> */}
         </div>
