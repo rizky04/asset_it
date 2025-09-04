@@ -65,8 +65,10 @@ class AssetsController extends Controller
      */
     public function show(Assets $asset)
     {
+        $data = Assets::where('id', $asset->id)->first();
         return Inertia::render('Asset/show', [
             'asset' => Assets::with(['category', 'user'])->findOrFail($asset->id),
+            'url' => route('assets.qr', $data->assets_code),
         ]);
     }
 
@@ -88,7 +90,7 @@ class AssetsController extends Controller
     public function update(UpdateAssetsRequest $request, Assets $asset)
     {
         $data = $request->validated();
-        
+
         if($request->hasFile('image')){
             if($asset->image){
                 Storage::delete('assets/' . basename($asset->image)); // Delete old image if exists
@@ -117,7 +119,7 @@ class AssetsController extends Controller
 
     public function getlastAssetsNumber($categoryId)
     {
-        
+
         $lastAssets = Assets::where('category_id', $categoryId)
             ->orderBy('created_at', 'desc')
             ->first();
@@ -157,6 +159,18 @@ public function downloadTemplate()
     return Excel::download(new AssetsTemplateExport, $filename);
 }
 
+public function qr($id){
+     $data = Assets::where('assets_code', $id)->first();
+    // $data = Assignments::with(['asset', 'user', 'receivedByUser'])
+    //     ->where('asset_id', $device)
+    //     ->orderBy('created_at', 'desc')
+    //     ->get();
+    return Inertia::render('Asset/qr', [
+        'asset' => $data,
+        'url' => route('assets.qr', $data->assets_code),
+    ]);
+}
+
 public function history($id){
     $data = DB::table('assignments')
         ->join('assets', 'assignments.asset_id', '=', 'assets.id')
@@ -169,7 +183,14 @@ public function history($id){
 
         $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
         $approvals = Approval::with('user')->get();
-    
+
+
+
+    $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
+    $approvals = Approval::with('user')->get();
+
+
+
     return Inertia::render('Asset/history', [
         'assignments' => $data,
         'settingApproval' => $settingApproval,
@@ -210,6 +231,27 @@ public function duplicate($id)
     $newAsset->save();
 
     return to_route('asset.index');
+}
+
+
+    public function detail($id){
+         $data = DB::table('assignments')
+        ->join('assets', 'assignments.asset_id', '=', 'assets.id')
+        ->join('users', 'assignments.user_id', '=', 'users.id')
+        ->join('users as rb', 'assignments.received_by', '=', 'rb.id')
+        ->select('assignments.*', 'assets.name as asset', 'assets.assets_code as assets_code', 'users.name as user', 'rb.name as receivedBy')
+        ->orderBy('assignments.created_at', 'desc')
+        ->where('assignments.asset_id', $id)
+        ->get();
+
+        $settingApproval = SettingApproval::with('user')->orderBy('type', 'asc')->get();
+        $approvals = Approval::with('user')->get();
+
+    return Inertia::render('Asset/history', [
+        'assignments' => $data,
+        'settingApproval' => $settingApproval,
+        'approvals' => $approvals,
+    ]);
 }
 
 

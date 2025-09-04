@@ -9,6 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingApprovalController;
 use App\Http\Controllers\UserController;
+use App\Models\Assets;
 
 Route::get('/', function () {
     return Inertia::render('auth/login');
@@ -21,6 +22,11 @@ Route::get('/', function () {
 Route::get('approval/{id}',[AssignmentsController::class, 'approval'])->name('approval');
 Route::resource('approval', ApprovalController::class);
 Route::post('approved', [ApprovalController::class, 'approved'])->name('approved');
+
+Route::get('details/{id}', [AssetsController::class, 'details'])->name('assets.details');
+Route::get('qrcode/{id}', [AssetsController::class, 'qr'])->name('assets.qr');
+
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('user', UserController::class);

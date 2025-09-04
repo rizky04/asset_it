@@ -3,7 +3,7 @@
 import { Asset } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
- 
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -30,9 +30,30 @@ import { useState } from "react"
 import { router } from "@inertiajs/react"
 import { toast } from "sonner"
 import { parse } from "path"
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const columns: ColumnDef<Asset>[] = [
-  {
+    {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
+            aria-label="Select all on page"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(v) => row.toggleSelected(!!v)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+        size: 32,
+      }
+  ,{
     header: "No",
     cell: ({ row }) => row.index + 1,
   },
@@ -100,7 +121,7 @@ export const columns: ColumnDef<Asset>[] = [
     header: "status",
     cell: ({ row }) => {
       const status = row.original.status;
-  
+
       const statusColors: { [key: string]: string } = {
         available: "bg-green-100 text-green-800",
         assigned: "bg-blue-100 text-blue-800",
@@ -108,7 +129,7 @@ export const columns: ColumnDef<Asset>[] = [
         damaged: "bg-red-100 text-red-800",
         disposed: "bg-gray-200 text-gray-800",
       };
-  
+
       return (
         <span
           className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -125,7 +146,7 @@ export const columns: ColumnDef<Asset>[] = [
   //   header: "purchase_price",
   //   cell:({row}) => {
   //     const price = parseFloat(row.getValue('purchase_price'))
-  //     const formatted = new Intl.NumberFormat("id-ID", 
+  //     const formatted = new Intl.NumberFormat("id-ID",
   //       { style: "currency", currency: "IDR"}).format(price);
   //     return formatted
   //   }
@@ -136,7 +157,7 @@ export const columns: ColumnDef<Asset>[] = [
   //   cell:({row}) => {
   //     const current_value = parseFloat(row.getValue('current_value'))
   //     const formatted = new Intl.NumberFormat("id-ID",{
-  //        style: "currency", 
+  //        style: "currency",
   //        currency: "IDR"
   //       }).format(current_value);
   //     return formatted
@@ -147,8 +168,8 @@ export const columns: ColumnDef<Asset>[] = [
     header: "Category",
     cell:({row}) => row.original.category.name
   },
-  
-  
+
+
   {
     accessorKey: "actions",
     header: "Actions",
