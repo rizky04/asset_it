@@ -321,7 +321,7 @@ export function DataTable<TData, TValue>({
         <div key={id} className="qr-card">
           <QRCodeCanvas value={url} size={200} includeMargin />
           <div className="qr-title">{label}</div>
-          <div className="qr-sub">{url}</div>
+          {/* <div className="qr-sub">{url}</div> */}
         </div>
       );
     })}
