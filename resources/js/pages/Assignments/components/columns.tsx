@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 import dayjs from 'dayjs'
- 
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -48,7 +48,7 @@ export const columns: ColumnDef<Assignments>[] = [
   {
     accessorKey: "user",
     header: "User",
-  }, 
+  },
   {
     accessorKey: "asset",
     header: "Assets",
@@ -130,13 +130,13 @@ export const columns: ColumnDef<Assignments>[] = [
       const assignments = row.original;
       const approvals = table.options.meta?.approvals as Approval[];
       const settingApprovals = table.options.meta?.settingApproval as SettingApproval[];
-     
-    
+
+
       // Ambil approvals khusus untuk assignment ini
       const assignmentApprovals = approvals.filter(
         (a) => a.assignment_id === assignments.id
       );
-    
+
       return (
         <div className="space-y-1">
           {settingApprovals
@@ -146,7 +146,7 @@ export const columns: ColumnDef<Assignments>[] = [
             const approved = assignmentApprovals.find(
               (approval) => approval.user_id === setting.user_id
             );
-    
+
             if (approved) {
               // ✅ Jika sudah approve, tampil centang hijau + nama user
               return (
@@ -171,7 +171,7 @@ export const columns: ColumnDef<Assignments>[] = [
             const approved = assignmentApprovals.find(
               (approval) => approval.user_id === setting.user_id
             );
-    
+
             if (approved) {
               // ✅ Jika sudah approve, tampil centang hijau + nama user
               return (
@@ -207,7 +207,7 @@ export const columns: ColumnDef<Assignments>[] = [
       );
     }
   })} */
-  
+
   }
 
 {(() => {
@@ -225,10 +225,10 @@ export const columns: ColumnDef<Assignments>[] = [
   );
 })()}
 
-  
+
 
         </div>
-      ); 
+      );
     },
   },
   {
@@ -242,7 +242,7 @@ export const columns: ColumnDef<Assignments>[] = [
         const [date, setDate] = useState<string>();
         const users = table.options.meta?.users as Users[];
 
-       
+
         const onDelete = () => {
             router.delete(route('assignments.destroy', assignments.id), {
                 onSuccess: () => {
@@ -271,7 +271,7 @@ export const columns: ColumnDef<Assignments>[] = [
 
         const assignTo = (e: React.FormEvent) => {
           e.preventDefault();
-         
+
           router.post(route('assignments.store'), {
             asset_id: assignments.asset_id,
             received_by: userID,
@@ -308,6 +308,11 @@ export const columns: ColumnDef<Assignments>[] = [
               >
                Detail
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {router.visit(route('approval', assignments.id))}}
+              >
+               approval user
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {setTimeout(() => {setIsDialogOpen(true)}, 100)}}>Delete</DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -319,7 +324,7 @@ export const columns: ColumnDef<Assignments>[] = [
                Return
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => {router.visit(route('assignments.assign', assignments.id))}}
               >
              Re_assign
@@ -384,14 +389,14 @@ export const columns: ColumnDef<Assignments>[] = [
             </div>
           </div>
 
-          
+
            <div className="gap-2 flex items-center justify-end mt-4">
            <Button type="submit" size="sm" className="mt-5">
             Sign to
           </Button>
           <Button type="button" size="sm" className="mt-5" onClick={() => setOpenModal(false)}>Cancel</Button>
-            </div>     
-         
+            </div>
+
           {/* <AlertDialogCancel onClick={() => setOpenModal(false)}>Cancel</AlertDialogCancel> */}
         </form>
       </AlertDialogDescription>
@@ -403,7 +408,7 @@ export const columns: ColumnDef<Assignments>[] = [
 </AlertDialog>
 
 
-       
+
         </>
         )
       },

@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { FormEvent, useRef } from "react";
+import { QRCodeCanvas } from "qrcode.react"; // +++
+
 
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
@@ -105,11 +107,15 @@ export function DataTable<TData, TValue>({
     onPaginationChange: setPagination,
     onGlobalFilterChange: setGlobalFilter, // ← handler untuk global filter
     globalFilterFn: "includesString", // default filter fn
+    // +++ enable row selection
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
       pagination,
       globalFilter, // ← tambahkan ini
+      rowSelection, // +++
     },
   })
 
@@ -133,6 +139,13 @@ export function DataTable<TData, TValue>({
           onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm"
         />
+              <Button
+                  variant="secondary"
+                  onClick={() => window.print()}
+                  disabled={table.getSelectedRowModel().rows.length === 0}
+              >
+                  Print QR ({table.getSelectedRowModel().rows.length})
+              </Button>
         <div className="flex flex-wrap gap-2 items-center">
 
           {/* <form onSubmit={handleImport} encType="multipart/form-data" className="flex items-center gap-2">
@@ -143,7 +156,7 @@ export function DataTable<TData, TValue>({
           </form> */}
           <Button onClick={handleExport}>
             Export
-          </Button> 
+          </Button>
           <Button onClick={() => {setTimeout(() => {setIsDialogOpen(true)}, 100)}}>
           Import
           </Button>
@@ -277,12 +290,44 @@ export function DataTable<TData, TValue>({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>Cancel</AlertDialogCancel>
-             
+
               <AlertDialogAction onClick={handleDownloadTemplate}>Unduh Template</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
-          
+
         </AlertDialog>
+        <style>{`
+  @media print {
+    body * { visibility: hidden; }
+    #print-area, #print-area * { visibility: visible; }
+    #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 16px; }
+    .qr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; page-break-inside: avoid; }
+    .qr-card { display: flex; flex-direction: column; align-items: center; justify-content: center;
+               padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .qr-title { font-size: 12px; margin-top: 8px; text-align: center; }
+    .qr-sub { font-size: 11px; color: #6b7280; text-align: center; }
+  }
+`}</style>
+
+<div id="print-area" className="hidden print:block">
+  <div className="qr-grid">
+    {table.getSelectedRowModel().rows.map((r) => {
+      const a: any = r.original;
+      const id = a?.assets_code;
+      const label = a?.assets_code ?? a?.name ?? `Asset ${id}`;
+      // URL sederhana (sesuaikan bila ada route publik detail asset)
+      const url = `${window.location.origin}/qrcode/${id}`;
+      return (
+        <div key={id} className="qr-card">
+          <QRCodeCanvas value={url} size={150} includeMargin />
+          <div className="qr-title">{label}</div>
+          {/* <div className="qr-sub">{url}</div> */}
+        </div>
+      );
+    })}
+  </div>
+</div>
+
     </>
   )
 }
